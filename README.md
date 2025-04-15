@@ -1,16 +1,34 @@
-# flutter_application_1
+# 📱 Stock Game Client (Flutter)
 
-A new Flutter project.
+Flutter로 제작한 주식 시뮬레이션 게임 앱의 클라이언트입니다.  
+NestJS 백엔드 서버와 연동하여 사용자 자산, 주식 매수/매도 등의 기능을 제공합니다.
 
-## Getting Started
+---
 
-This project is a starting point for a Flutter application.
+## ✅ 주요 기능
 
-A few resources to get you started if this is your first Flutter project:
+- 대시보드 화면
+  - 보유 현금 표시
+  - 보유 주식 리스트
+  - 거래 가능한 종목 목록 표시
+- 서버 연동 (`/dashboard` API)
+  - NestJS 백엔드에서 데이터 받아오기
+- 상태 관리: GetX
+- 화면 구성: Obx + ListView 기반의 유동적 UI
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+---
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## 📦 사용 기술
+
+- Flutter 3.x
+- GetX (상태관리)
+- HTTP 통신 (`http` 패키지)
+- UUID + SharedPreferences (간단한 사용자 식별용)
+
+---
+
+## 🚀 실행 방법
+
+```bash
+flutter pub get
+flutter run
