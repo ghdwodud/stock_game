@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "134793802976",
+    "project_id": "stock-game-5944b",
+    "storage_bucket": "stock-game-5944b.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:134793802976:android:209ace79c824638bb90c85",
+        "android_client_info": {
+          "package_name": "com.example.flutter_application_1"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBfP6ph012xJNDobxaC9Hop7bL8jbhUAx0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:134793802976:android:e3c95c24b9c75864b90c85",
+        "android_client_info": {
+          "package_name": "com.jyhong.stock_game"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBfP6ph012xJNDobxaC9Hop7bL8jbhUAx0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
