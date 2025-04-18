@@ -9,7 +9,7 @@ plugins {
 }
 
 android {
-    namespace = "stock_game"
+    namespace = "com.jyhong.stock_game"
     compileSdk = 35                       // ✅ Flutter 대신 명시적으로 고정
     ndkVersion = "27.0.12077973"         // ✅ Firebase가 요구하는 NDK 버전
 

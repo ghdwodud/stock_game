@@ -6,6 +6,7 @@ class OnboardingController extends GetxController {
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
   Future<void> loginWithGoogle() async {
+    print('loginWithGoogle');
     try {
       final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
       if (googleUser == null) return; // 사용자가 취소함
@@ -21,6 +22,7 @@ class OnboardingController extends GetxController {
       _onLoginSuccess();
     } catch (e) {
       Get.snackbar("로그인 실패", e.toString());
+      print('loginWithGoogle error:${e.toString()}');
     }
   }
 
