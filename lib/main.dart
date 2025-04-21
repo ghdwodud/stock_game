@@ -1,4 +1,4 @@
-import 'package:com.jyhong.stock_game/pages/log_page/log_page.dart';
+
 import 'package:com.jyhong.stock_game/pages/market_page/market_page.dart';
 import 'package:com.jyhong.stock_game/pages/portfolio_page/portfolio_page.dart';
 import 'package:com.jyhong.stock_game/pages/settings_page/settings_page.dart';
@@ -45,7 +45,6 @@ class MyApp extends StatelessWidget {
         GetPage(name: '/main', page: () => StockGameMainPage()),
         GetPage(name: '/market', page: () => MarketPage()),
         GetPage(name: '/portfolio', page: () => PortfolioPage()),
-        GetPage(name: '/log', page: () => LogPage()),
         GetPage(name: '/settings', page: () => SettingsPage()),
       ],
     );

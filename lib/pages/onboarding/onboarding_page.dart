@@ -39,13 +39,13 @@ class OnboardingPage extends StatelessWidget {
             ),
             const SizedBox(height: 16),
 
-            SignInWithAppleButton(
-              onPressed: () {
-                // TODO: controller.loginWithApple()
-              },
-              style: SignInWithAppleButtonStyle.black,
-            ),
-            const SizedBox(height: 16),
+            // SignInWithAppleButton(
+            //   onPressed: () {
+            //     // TODO: controller.loginWithApple()
+            //   },
+            //   style: SignInWithAppleButtonStyle.black,
+            // ),
+            // const SizedBox(height: 16),
 
             OutlinedButton(
               onPressed: controller.loginAsGuest,
