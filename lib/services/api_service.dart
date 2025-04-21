@@ -2,7 +2,11 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class ApiService {
-  final String baseUrl = 'https://api.stockgame.cc';
+  // --dart-define=BASE_URL=... 으로 주입
+  final String baseUrl = const String.fromEnvironment(
+    'BASE_URL',
+    defaultValue: 'http://localhost:3000', // 개발 기본값
+  );
 
   Future<dynamic> get(String endpoint) async {
     final res = await http.get(Uri.parse('$baseUrl$endpoint'));
@@ -22,6 +26,7 @@ class ApiService {
     if (res.statusCode >= 200 && res.statusCode < 300) {
       return jsonDecode(res.body);
     } else {
+      print('❌ API Error: ${res.statusCode} - ${res.body}');
       throw Exception('API Error: ${res.statusCode}');
     }
   }

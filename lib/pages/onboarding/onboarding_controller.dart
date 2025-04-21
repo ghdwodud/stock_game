@@ -28,7 +28,7 @@ class OnboardingController extends GetxController {
 
   Future<void> loginAsGuest() async {
     try {
-      await _auth.signInAnonymously();
+      //await _auth.signInAnonymously();
       _onLoginSuccess();
     } catch (e) {
       Get.snackbar("게스트 로그인 실패", e.toString());
