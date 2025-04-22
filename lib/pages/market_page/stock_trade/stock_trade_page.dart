@@ -1,36 +1,42 @@
 import 'package:com.jyhong.stock_game/models/stock_model.dart';
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
+import 'stock_trade_controller.dart';
 
 class StockTradePage extends StatelessWidget {
-  final StockModel stock = Get.arguments;
-  final TextEditingController qtyController = TextEditingController();
+  final controller = Get.put(StockTradeController());
 
-  void _onBuy() {
-    final qty = int.tryParse(qtyController.text);
-    if (qty == null || qty <= 0) {
-      Get.snackbar('오류', '유효한 수량을 입력하세요');
-      return;
-    }
-
-    // TODO: 매수 API 호출
-    print('🔼 매수 ${stock.name} $qty주');
-  }
-
-  void _onSell() {
-    final qty = int.tryParse(qtyController.text);
-    if (qty == null || qty <= 0) {
-      Get.snackbar('오류', '유효한 수량을 입력하세요');
-      return;
-    }
-
-    // TODO: 매도 API 호출
-    print('🔽 매도 ${stock.name} $qty주');
+  Widget _buildPriceChart(List<double> history) {
+    return SizedBox(
+      height: 200,
+      child: LineChart(
+        LineChartData(
+          lineBarsData: [
+            LineChartBarData(
+              spots:
+                  history
+                      .asMap()
+                      .entries
+                      .map((e) => FlSpot(e.key.toDouble(), e.value))
+                      .toList(),
+              isCurved: true,
+              dotData: FlDotData(show: false),
+              belowBarData: BarAreaData(show: false),
+            ),
+          ],
+          titlesData: FlTitlesData(show: false),
+          borderData: FlBorderData(show: false),
+          gridData: FlGridData(show: false),
+        ),
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
+    final stock = controller.stock;
+
     return Scaffold(
       appBar: AppBar(title: Text('${stock.name} 거래')),
       body: Padding(
@@ -39,36 +45,53 @@ class StockTradePage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text('현재가: ₩ ${stock.price.toStringAsFixed(2)}',
-                style: TextStyle(fontSize: 18)),
-            SizedBox(height: 16),
+              style: const TextStyle(fontSize: 18),
+            ),
+            const SizedBox(height: 16),
+            Obx(() {
+              if (controller.isLoading.value) {
+                return const Center(child: CircularProgressIndicator());
+              }
+
+              if (controller.priceHistory.isEmpty) {
+                return const Center(child: Text('차트 데이터 없음'));
+              }
+
+              return _buildPriceChart(controller.priceHistory);
+            }),
+            const SizedBox(height: 16),
             TextField(
-              controller: qtyController,
+              controller: controller.qtyController,
               keyboardType: TextInputType.number,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: '수량 입력',
                 border: OutlineInputBorder(),
               ),
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             Row(
               children: [
                 Expanded(
                   child: ElevatedButton(
-                    onPressed: _onBuy,
-                    child: Text('매수'),
-                    style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
+                    onPressed: controller.onBuy,
+                    child: const Text('매수'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.green,
+                    ),
                   ),
                 ),
-                SizedBox(width: 10),
+                const SizedBox(width: 10),
                 Expanded(
                   child: ElevatedButton(
-                    onPressed: _onSell,
-                    child: Text('매도'),
-                    style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+                    onPressed: controller.onSell,
+                    child: const Text('매도'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.red,
+                    ),
                   ),
                 ),
               ],
-            )
+            ),
           ],
         ),
       ),

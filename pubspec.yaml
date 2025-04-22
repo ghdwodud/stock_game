@@ -41,6 +41,7 @@ dependencies:
   sign_in_with_apple: ^7.0.1
   crypto: ^3.0.3 
   flutterfire_cli: any  # CLI 도구는 pubspec에 안 들어감 (전역 설치)
+  logger: ^2.5.0
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
