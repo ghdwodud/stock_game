@@ -16,8 +16,21 @@ class AllStocksPage extends StatelessWidget {
         }
 
         if (controller.allStocks.isEmpty) {
-          return Center(child: Text('불러올 주식이 없습니다.'));
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text('불러올 주식이 없습니다.'),
+                SizedBox(height: 16),
+                ElevatedButton(
+                  onPressed: controller.fetchAllStocks,
+                  child: Text('다시 시도'),
+                ),
+              ],
+            ),
+          );
         }
+
 
         return ListView.builder(
           itemCount: controller.allStocks.length,
