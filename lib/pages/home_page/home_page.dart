@@ -1,35 +1,54 @@
+import 'package:com.jyhong.stock_game/pages/home_page/home_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class HomePage extends StatelessWidget {
-  const HomePage({super.key});
+  final controller = Get.put(HomeController());
 
   @override
   Widget build(BuildContext context) {
-    // TODO: 나중에 실제 데이터로 대체
-    final nickname = '게스트123';
-    final cash = 1000000;
-    final stockValue = 2250000;
-    final totalAsset = cash + stockValue;
-    final profitRate = 0.085; // +8.5%
-
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('대시보드'),
-        centerTitle: true,
-      ),
-      body: ListView(
-        padding: const EdgeInsets.all(16),
-        children: [
-          _buildUserCard(nickname),
-          const SizedBox(height: 16),
-          _buildAssetCard(totalAsset, cash, stockValue, profitRate),
-          const SizedBox(height: 16),
-          _buildEventBanner(),
-          const SizedBox(height: 16),
-          _buildMyStocksPreview(),
-        ],
-      ),
+      appBar: AppBar(title: const Text('대시보드'), centerTitle: true),
+      body: Obx(() {
+        if (controller.isLoading.value) {
+          return const Center(child: CircularProgressIndicator());
+        }
+
+        final portfolio = controller.userPortfolio.value;
+        if (portfolio == null) {
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text('데이터를 불러올 수 없습니다.'),
+                SizedBox(height: 16),
+                ElevatedButton(
+                  onPressed: controller.fetchPortfolio,
+                  child: Text('다시 시도'),
+                ),
+              ],
+            ),
+          );
+        }
+
+        return ListView(
+          padding: const EdgeInsets.all(16),
+          children: [
+            _buildUserCard(portfolio.nickname),
+            const SizedBox(height: 16),
+            _buildAssetCard(
+              portfolio.totalAsset,
+              portfolio.cash,
+              portfolio.stockValue,
+              portfolio.profitRate,
+            ),
+            const SizedBox(height: 16),
+            _buildEventBanner(),
+            const SizedBox(height: 16),
+            _buildMyStocksPreview(),
+          ],
+        );
+      }),
     );
   }
 
