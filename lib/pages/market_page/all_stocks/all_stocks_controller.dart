@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:com.jyhong.stock_game/models/stock_model.dart';
 import 'package:com.jyhong.stock_game/services/api_service.dart';
 import 'package:get/get.dart';
@@ -8,10 +9,23 @@ class AllStocksController extends GetxController {
   RxList<StockModel> allStocks = <StockModel>[].obs;
   RxBool isLoading = false.obs;
 
+  Timer? _refreshTimer;
+
   @override
   void onInit() {
     super.onInit();
     fetchAllStocks();
+
+    // ✅ 10초마다 갱신
+    _refreshTimer = Timer.periodic(Duration(seconds: 10), (_) {
+      fetchAllStocks();
+    });
+  }
+
+  @override
+  void onClose() {
+    _refreshTimer?.cancel();
+    super.onClose();
   }
 
   void fetchAllStocks() async {
