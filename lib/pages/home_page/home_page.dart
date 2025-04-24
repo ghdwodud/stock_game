@@ -6,7 +6,7 @@ class HomePage extends StatelessWidget {
   final controller = Get.put(HomeController());
 
   @override
-  Widget build(BuildContext context) {
+Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('대시보드'), centerTitle: true),
       body: Obx(() {
@@ -15,34 +15,34 @@ class HomePage extends StatelessWidget {
         }
 
         final portfolio = controller.userPortfolio.value;
-        if (portfolio == null) {
-          return Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text('데이터를 불러올 수 없습니다.'),
-                SizedBox(height: 16),
-                ElevatedButton(
-                  onPressed: controller.fetchPortfolio,
-                  child: Text('다시 시도'),
-                ),
-              ],
-            ),
-          );
-        }
 
         return ListView(
           padding: const EdgeInsets.all(16),
           children: [
-            _buildUserCard(portfolio.nickname),
+            // 유저 카드
+            if (portfolio != null)
+              _buildUserCard(portfolio.nickname)
+            else
+              _buildErrorCard('사용자 정보를 불러올 수 없습니다.'),
+
             const SizedBox(height: 16),
+
+            // 자산 카드
+            if (portfolio != null)
             _buildAssetCard(
               portfolio.totalAsset,
               portfolio.cash,
               portfolio.stockValue,
               portfolio.profitRate,
+              )
+            else
+              _buildErrorCard(
+                '포트폴리오 정보를 불러올 수 없습니다.',
+                retry: controller.fetchPortfolio,
             ),
+
             const SizedBox(height: 16),
+
             _buildEventBanner(),
             const SizedBox(height: 16),
             _buildMyStocksPreview(),
@@ -138,6 +138,24 @@ class HomePage extends StatelessWidget {
             trailing: Text('-1.1%', style: TextStyle(color: Colors.red)),
           ),
         ],
+      ),
+    );
+  }
+
+Widget _buildErrorCard(String message, {VoidCallback? retry}) {
+    return Card(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          children: [
+            Text(message),
+            if (retry != null) ...[
+              const SizedBox(height: 8),
+              ElevatedButton(onPressed: retry, child: const Text('다시 시도')),
+            ],
+          ],
+        ),
       ),
     );
   }
