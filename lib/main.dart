@@ -1,10 +1,10 @@
 import 'package:com.jyhong.stock_game/pages/market_page/market_page.dart';
 import 'package:com.jyhong.stock_game/pages/portfolio_page/portfolio_page.dart';
 import 'package:com.jyhong.stock_game/pages/settings_page/settings_page.dart';
+import 'package:com.jyhong.stock_game/services/auth_service.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get_navigation/src/root/get_material_app.dart';
-import 'package:get/get_navigation/src/routes/get_route.dart';
+import 'package:get/get.dart';
 import 'package:logger/logger.dart';
 
 import 'firebase_options.dart';
@@ -16,6 +16,9 @@ final logger = Logger();
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
+  Get.put(AuthService());
+   
   runApp(MyApp());
 }
 
@@ -24,7 +27,6 @@ final ThemeData darkTheme = ThemeData(
   brightness: Brightness.dark,
   scaffoldBackgroundColor: const Color(0xFF0A0A0A), // Rich Black
   colorScheme: ColorScheme.dark(
-    background: Color(0xFF0A0A0A),
     surface: Color(0xFF161616), // 조금 더 밝은 카드 배경
     primary: Color(0xFF5AC8FA), // 라이트 블루 포인트
     secondary: Color(0xFF64B5F6),

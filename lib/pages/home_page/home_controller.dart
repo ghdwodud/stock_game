@@ -1,9 +1,11 @@
 import 'package:com.jyhong.stock_game/models/user_profile_model.dart';
 import 'package:com.jyhong.stock_game/services/api_service.dart';
+import 'package:com.jyhong.stock_game/services/auth_service.dart';
 import 'package:get/get.dart';
 
 class HomeController extends GetxController {
   final ApiService _apiService = ApiService();
+  final AuthService _authService = Get.find<AuthService>();
 
   Rx<UserPortfolioModel?> userPortfolio = Rx<UserPortfolioModel?>(null);
   RxBool isLoading = false.obs;
@@ -17,7 +19,8 @@ class HomeController extends GetxController {
   void fetchPortfolio() async {
     isLoading.value = true;
     try {
-      final data = await _apiService.get('/users/1/portfolio'); // TODO: userId 동적 처리
+      final userId = _authService.currentUserId;
+      final data = await _apiService.get('/users/$userId/portfolio');
       userPortfolio.value = UserPortfolioModel.fromJson(data);
     } catch (e) {
       Get.snackbar('에러', '포트폴리오 정보를 불러오지 못했습니다.');
