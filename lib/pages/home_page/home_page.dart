@@ -8,7 +8,7 @@ class HomePage extends StatelessWidget {
   @override
 Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('대시보드'), centerTitle: true),
+      appBar: AppBar(title: const Text('Home'), centerTitle: true),
       body: Obx(() {
         if (controller.isLoading.value) {
           return const Center(child: CircularProgressIndicator());
@@ -43,7 +43,7 @@ Widget build(BuildContext context) {
 
             const SizedBox(height: 16),
 
-            _buildEventBanner(),
+            //_buildEventBanner(),
             const SizedBox(height: 16),
             _buildMyStocksPreview(),
           ],
@@ -75,8 +75,11 @@ Widget build(BuildContext context) {
   }
 
   Widget _buildAssetCard(double total, double cash, double stock, double rate) {
-    final rateColor = rate >= 0 ? Colors.green : Colors.red;
-    final ratePrefix = rate >= 0 ? '+' : '';
+    // 새로운 수익률 계산
+    final profitRate = (total + cash) / (stock + cash);
+
+    final rateColor = profitRate >= 1 ? Colors.green : Colors.red;
+    final ratePrefix = profitRate >= 1 ? '+' : '';
 
     return Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -96,7 +99,7 @@ Widget build(BuildContext context) {
             Text('주식 평가금액: ₩ ${_formatNumber(stock)}'),
             const SizedBox(height: 4),
             Text(
-              '수익률: $ratePrefix${(rate * 100).toStringAsFixed(2)}%',
+              '수익률: $ratePrefix${((profitRate - 1) * 100).toStringAsFixed(2)}%',
               style: TextStyle(color: rateColor),
             ),
           ],
@@ -104,6 +107,7 @@ Widget build(BuildContext context) {
       ),
     );
   }
+
 
 
   Widget _buildEventBanner() {
@@ -133,20 +137,55 @@ Widget build(BuildContext context) {
             trailing: Icon(Icons.arrow_forward_ios),
           ),
           const Divider(height: 1),
-          ListTile(
-            title: const Text('AAPL'),
-            subtitle: const Text('5주 보유'),
-            trailing: Text('+3.2%', style: TextStyle(color: Colors.green)),
-          ),
-          ListTile(
-            title: const Text('TSLA'),
-            subtitle: const Text('2주 보유'),
-            trailing: Text('-1.1%', style: TextStyle(color: Colors.red)),
-          ),
+          Obx(() {
+            final holdings = controller.userPortfolio.value?.holdings ?? [];
+
+            if (holdings.isEmpty) {
+              return const Padding(
+                padding: EdgeInsets.all(16.0),
+                child: Center(child: Text('보유 종목이 없습니다.')),
+              );
+            }
+
+            return Column(
+              children:
+                  holdings.map((holding) {
+                    return FutureBuilder(
+                      future: controller.getStockInfo(holding.stockId),
+                      builder: (context, snapshot) {
+                        if (!snapshot.hasData) {
+                          return const ListTile(title: Text('불러오는 중...'));
+                        }
+
+                        final stock = snapshot.data!;
+                        final profitRate =
+                            holding.avgBuyPrice > 0
+                                ? (stock.price - holding.avgBuyPrice) /
+                                    holding.avgBuyPrice
+                                : 0.0;
+
+                        return ListTile(
+                          title: Text(stock.symbol),
+                          subtitle: Text('${holding.quantity}주 보유'),
+                          trailing: Text(
+                            '${profitRate >= 0 ? '+' : ''}${(profitRate * 100).toStringAsFixed(2)}%',
+                            style: TextStyle(
+                              color:
+                                  profitRate >= 0 ? Colors.green : Colors.red,
+                            ),
+                          ),
+                        );
+                      },
+                    );
+                  }).toList(),
+            );
+          }),
         ],
       ),
     );
   }
+
+
 
 Widget _buildErrorCard(String message, {VoidCallback? retry}) {
     return Card(

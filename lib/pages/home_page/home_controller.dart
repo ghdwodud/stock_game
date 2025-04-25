@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:com.jyhong.stock_game/models/stock_model.dart';
 import 'package:com.jyhong.stock_game/models/user_profile_model.dart';
 import 'package:com.jyhong.stock_game/services/api_service.dart';
 import 'package:com.jyhong.stock_game/services/auth_service.dart';
@@ -55,5 +56,9 @@ class HomeController extends GetxController {
     }
   }
 }
+Future<StockModel> getStockInfo(int stockId) async {
+    final data = await _apiService.get('/stocks/$stockId');
+    return StockModel.fromJson(data);
+  }
 
 }

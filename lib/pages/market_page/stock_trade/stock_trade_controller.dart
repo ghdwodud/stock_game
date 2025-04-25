@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:com.jyhong.stock_game/pages/home_page/home_controller.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:com.jyhong.stock_game/services/api_service.dart';
@@ -20,10 +21,17 @@ class StockTradeController extends GetxController {
     stock = Get.arguments;
     fetchPriceHistory();
 
-    // ✅ 10초마다 갱신 (원하면 60초로 설정 가능)
-    _historyTimer = Timer.periodic(Duration(seconds: 10), (_) {
+    // ✅ 5초마다 갱신
+    _historyTimer = Timer.periodic(Duration(seconds: 5), (_) {
       fetchPriceHistory();
     });
+  }
+
+  @override
+  void onClose() {
+    qtyController.dispose();
+    _historyTimer?.cancel(); // ✅ 타이머 꼭 종료
+    super.onClose();
   }
 
   void fetchPriceHistory() async {
@@ -50,7 +58,7 @@ class StockTradeController extends GetxController {
         'stockId': stock.id,
         'quantity': qty,
       });
-
+      Get.find<HomeController>().fetchPortfolio(showLoading: false);
       Get.snackbar('매수 성공', '${stock.name} $qty주를 매수했습니다');
       print('🟢 매수 응답: $response');
     } catch (e) {
@@ -74,7 +82,7 @@ void onSell() async {
         'stockId': stock.id,
         'quantity': qty,
       });
-
+      Get.find<HomeController>().fetchPortfolio(showLoading: false);
       Get.snackbar('매도 성공', '${stock.name} $qty주를 매도했습니다');
       print('🟢 매도 응답: $response');
     } catch (e) {
@@ -85,11 +93,16 @@ void onSell() async {
     }
   }
 
-
-  @override
-  void onClose() {
-    qtyController.dispose();
-    _historyTimer?.cancel(); // ✅ 타이머 꼭 종료
-    super.onClose();
+  int get maxBuyQuantity {
+    final cash = Get.find<HomeController>().userPortfolio.value?.cash ?? 0;
+    return (cash / stock.price).floor();
   }
+
+  int get holdingQuantity {
+    final holdings =
+        Get.find<HomeController>().userPortfolio.value?.holdings ?? [];
+    return holdings.firstWhereOrNull((h) => h.stockId == stock.id)?.quantity ??
+        0;
+  }
+
 }

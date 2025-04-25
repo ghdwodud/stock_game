@@ -8,6 +8,7 @@ class AllStocksController extends GetxController {
 
   RxList<StockModel> allStocks = <StockModel>[].obs;
   RxBool isLoading = false.obs;
+  RxBool isRefreshing = false.obs; // 추가: 새로고침 상태
 
   Timer? _refreshTimer;
 
@@ -29,18 +30,26 @@ class AllStocksController extends GetxController {
   }
 
   void fetchAllStocks() async {
-    isLoading.value = true;
+    if (isRefreshing.value) return; // 이미 새로고침 중이면 방지
+
+    isRefreshing.value = true; // 새로고침 시작
     try {
+      isLoading.value = true;
       final data = await _apiService.get('/stocks');
 
-      allStocks.value = List<StockModel>.from(
+      // 데이터 갱신 시, 화면 깜빡임 방지
+      final updatedStocks = List<StockModel>.from(
         data.map((e) => StockModel.fromJson(e)),
       );
+
+      // 리스트 갱신
+      allStocks.value = updatedStocks;
     } catch (e) {
       print('❌ fetchAllStocks error: $e');
       Get.snackbar('에러', '주식 데이터를 불러오지 못했습니다.');
     } finally {
       isLoading.value = false;
+      isRefreshing.value = false; // 새로고침 끝
     }
   }
 }
