@@ -60,13 +60,40 @@ class StockTradePage extends StatelessWidget {
               return _buildPriceChart(controller.priceHistory);
             }),
             const SizedBox(height: 16),
-            TextField(
-              controller: controller.qtyController,
-              keyboardType: TextInputType.number,
-              decoration: const InputDecoration(
-                labelText: '수량 입력',
-                border: OutlineInputBorder(),
-              ),
+            Text('최대 매수 가능 수량: ${controller.maxBuyQuantity}주'),
+            Text('보유 수량: ${controller.holdingQuantity}주'),
+            const SizedBox(height: 8),
+            Row(
+              children: [
+                IconButton(
+                  icon: const Icon(Icons.remove),
+                  onPressed: () {
+                    final current =
+                        int.tryParse(controller.qtyController.text) ?? 1;
+                    if (current > 1) {
+                      controller.qtyController.text = (current - 1).toString();
+                    }
+                  },
+                ),
+                Expanded(
+                  child: TextField(
+                    controller: controller.qtyController,
+                    keyboardType: TextInputType.number,
+                    decoration: const InputDecoration(
+                      labelText: '수량 입력',
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
+                ),
+                IconButton(
+                  icon: const Icon(Icons.add),
+                  onPressed: () {
+                    final current =
+                        int.tryParse(controller.qtyController.text) ?? 0;
+                    controller.qtyController.text = (current + 1).toString();
+                  },
+                ),
+              ],
             ),
             const SizedBox(height: 16),
             Row(

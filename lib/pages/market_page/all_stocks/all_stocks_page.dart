@@ -11,8 +11,9 @@ class AllStocksPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: Text('전체 주식 목록')),
       body: Obx(() {
-        if (controller.isLoading.value) {
-          return Center(child: CircularProgressIndicator());
+        // 새로고침 중일 때는 로딩 화면 안 띄우기
+        if (controller.isLoading.value && !controller.isRefreshing.value) {
+          return Center(child: CircularProgressIndicator()); // 로딩 UI
         }
 
         if (controller.allStocks.isEmpty) {
@@ -30,7 +31,6 @@ class AllStocksPage extends StatelessWidget {
             ),
           );
         }
-
 
         return ListView.builder(
           itemCount: controller.allStocks.length,
