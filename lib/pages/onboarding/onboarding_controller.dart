@@ -11,20 +11,35 @@ class OnboardingController extends GetxController {
 
   Future<void> loginWithGoogle() async {
     try {
-      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
-      if (googleUser == null) return;
+      final GoogleSignIn _googleSignIn = GoogleSignIn();
 
+      final googleUser = await _googleSignIn.signIn();
+
+      if (googleUser == null) {
+        print("🚨 사용자가 구글 로그인을 취소했습니다.");
+        return;
+      }
+
+      // ✅ 인증 토큰 받아오기
       final googleAuth = await googleUser.authentication;
+
       final credential = GoogleAuthProvider.credential(
         accessToken: googleAuth.accessToken,
         idToken: googleAuth.idToken,
       );
 
-      final userCredential = await _auth.signInWithCredential(credential);
-      final idToken = await userCredential.user?.getIdToken();
+      // ✅ Firebase 인증
+      final userCredential = await FirebaseAuth.instance.signInWithCredential(
+        credential,
+      );
 
+      final firebaseUser = userCredential.user;
+      if (firebaseUser == null) throw Exception('Firebase 사용자 정보가 없습니다.');
+
+      final idToken = await firebaseUser.getIdToken();
       if (idToken == null) throw Exception('idToken을 가져올 수 없습니다.');
 
+      // ✅ 서버에 idToken 전달하여 JWT 발급 요청
       final response = await _api.post('/auth/google-login', {
         'idToken': idToken,
       });
@@ -32,19 +47,28 @@ class OnboardingController extends GetxController {
       final jwt = response['token'];
       final user = response['user'];
 
-      // ✅ 상태 저장
+      if (jwt == null ||
+          user == null ||
+          user['uuid'] == null ||
+          user['name'] == null) {
+        throw Exception('서버 응답이 올바르지 않습니다.');
+      }
+
+      // ✅ 앱 내 인증 상태 저장
       _authService.setAuth(
         userUuid: user['uuid'],
-        nickname: user['nickname'],
+        nickname: user['name'],
         token: jwt,
       );
 
+      // ✅ 로그인 성공 시 메인 페이지로 이동
       Get.offAllNamed('/main');
-    } catch (e) {
-      print('❌ 구글 로그인 실패: $e');
+    } catch (e, st) {
+      print('❌ 구글 로그인 실패: $e\n$st');
       Get.snackbar("로그인 실패", e.toString());
     }
   }
+
 
   Future<void> loginAsGuest() async {
     try {
@@ -69,5 +93,4 @@ class OnboardingController extends GetxController {
       Get.snackbar("게스트 로그인 실패", e.toString());
     }
   }
-
 }
