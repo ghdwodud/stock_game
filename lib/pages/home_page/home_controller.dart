@@ -19,7 +19,7 @@ class HomeController extends GetxController {
   void fetchPortfolio() async {
     isLoading.value = true;
     try {
-      final userId = _authService.currentUserId;
+      final userId = _authService.userUuid;
       final data = await _apiService.get('/users/$userId/portfolio');
       userPortfolio.value = UserPortfolioModel.fromJson(data);
     } catch (e) {

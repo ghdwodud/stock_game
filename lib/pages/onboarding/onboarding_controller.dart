@@ -34,7 +34,7 @@ class OnboardingController extends GetxController {
 
       // ✅ 상태 저장
       _authService.setAuth(
-        userId: user['id'],
+        userUuid: user['uuid'],
         nickname: user['nickname'],
         token: jwt,
       );
@@ -59,11 +59,10 @@ class OnboardingController extends GetxController {
       }
 
       _authService.setAuth(
-        userId: user['id'],
-        nickname: '게스트', // 또는 'user-${user['id']}' 식으로도 가능
+        userUuid: user['uuid'],
+        nickname: user['nickname'],
         token: jwt,
       );
-
       Get.offAllNamed('/main');
     } catch (e) {
       print('❌ 게스트 로그인 실패: $e');
