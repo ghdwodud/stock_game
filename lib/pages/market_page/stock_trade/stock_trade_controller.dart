@@ -37,23 +37,54 @@ class StockTradeController extends GetxController {
     }
   }
 
-  void onBuy() {
+  void onBuy() async {
     final qty = int.tryParse(qtyController.text);
     if (qty == null || qty <= 0) {
       Get.snackbar('오류', '유효한 수량을 입력하세요');
       return;
     }
-    print('🔼 매수 ${stock.name} $qty주');
+
+    isLoading.value = true;
+    try {
+      final response = await _apiService.post('/transactions/buy', {
+        'stockId': stock.id,
+        'quantity': qty,
+      });
+
+      Get.snackbar('매수 성공', '${stock.name} $qty주를 매수했습니다');
+      print('🟢 매수 응답: $response');
+    } catch (e) {
+      print('❌ 매수 실패: $e');
+      Get.snackbar('매수 실패', e.toString());
+    } finally {
+      isLoading.value = false;
+    }
   }
 
-  void onSell() {
+void onSell() async {
     final qty = int.tryParse(qtyController.text);
     if (qty == null || qty <= 0) {
       Get.snackbar('오류', '유효한 수량을 입력하세요');
       return;
     }
-    print('🔽 매도 ${stock.name} $qty주');
+
+    isLoading.value = true;
+    try {
+      final response = await _apiService.post('/transactions/sell', {
+        'stockId': stock.id,
+        'quantity': qty,
+      });
+
+      Get.snackbar('매도 성공', '${stock.name} $qty주를 매도했습니다');
+      print('🟢 매도 응답: $response');
+    } catch (e) {
+      print('❌ 매도 실패: $e');
+      Get.snackbar('매도 실패', e.toString());
+    } finally {
+      isLoading.value = false;
+    }
   }
+
 
   @override
   void onClose() {

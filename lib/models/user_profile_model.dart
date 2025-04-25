@@ -1,8 +1,8 @@
 class UserPortfolioModel {
   final String nickname;
-  final int cash;
-  final int stockValue;
-  final int totalAsset;
+  final double cash;
+  final double stockValue;
+  final double totalAsset;
   final double profitRate;
 
   UserPortfolioModel({
@@ -16,9 +16,9 @@ class UserPortfolioModel {
   factory UserPortfolioModel.fromJson(Map<String, dynamic> json) {
     return UserPortfolioModel(
       nickname: json['nickname'],
-      cash: json['cash'],
-      stockValue: json['stockValue'],
-      totalAsset: json['totalAsset'],
+      cash: (json['cash'] as num).toDouble(),
+      stockValue: (json['stockValue'] as num).toDouble(),
+      totalAsset: (json['totalAsset'] as num).toDouble(),
       profitRate: (json['profitRate'] as num).toDouble(),
     );
   }
