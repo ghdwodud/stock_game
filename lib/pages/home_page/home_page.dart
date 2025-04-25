@@ -74,7 +74,7 @@ Widget build(BuildContext context) {
     );
   }
 
-  Widget _buildAssetCard(int total, int cash, int stock, double rate) {
+  Widget _buildAssetCard(double total, double cash, double stock, double rate) {
     final rateColor = rate >= 0 ? Colors.green : Colors.red;
     final ratePrefix = rate >= 0 ? '+' : '';
 
@@ -87,18 +87,24 @@ Widget build(BuildContext context) {
           children: [
             const Text('총 자산', style: TextStyle(fontSize: 16)),
             const SizedBox(height: 8),
-            Text('₩ ${_formatNumber(total)}', style: const TextStyle(fontSize: 24)),
+            Text(
+              '₩ ${_formatNumber(total)}',
+              style: const TextStyle(fontSize: 24),
+            ),
             const SizedBox(height: 8),
             Text('보유 현금: ₩ ${_formatNumber(cash)}'),
             Text('주식 평가금액: ₩ ${_formatNumber(stock)}'),
             const SizedBox(height: 4),
-            Text('수익률: $ratePrefix${(rate * 100).toStringAsFixed(2)}%',
-                style: TextStyle(color: rateColor)),
+            Text(
+              '수익률: $ratePrefix${(rate * 100).toStringAsFixed(2)}%',
+              style: TextStyle(color: rateColor),
+            ),
           ],
         ),
       ),
     );
   }
+
 
   Widget _buildEventBanner() {
     return Card(
@@ -160,7 +166,9 @@ Widget _buildErrorCard(String message, {VoidCallback? retry}) {
     );
   }
 
-  String _formatNumber(int num) {
-    return num.toString().replaceAllMapped(RegExp(r'\B(?=(\d{3})+(?!\d))'), (match) => ',');
+String _formatNumber(num value) {
+    return value
+        .toStringAsFixed(0)
+        .replaceAllMapped(RegExp(r'\B(?=(\d{3})+(?!\d))'), (match) => ',');
   }
 }

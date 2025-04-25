@@ -20,7 +20,6 @@ class StockModel {
   });
 
   factory StockModel.fromJson(Map<String, dynamic> json) {
-    logger.d('StockModel fromJson json: $json');
     return StockModel(
       id: json['id'] ?? 0, // ✅ 추가
       symbol: json['symbol'] ?? '',
