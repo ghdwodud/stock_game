@@ -1,7 +1,10 @@
-name: Flutter Build APK (Manual Deployment)
+name: Flutter Build APK and Release
 
 on:
-  workflow_dispatch:
+  workflow_dispatch:  # 수동 실행
+
+permissions:
+  contents: write
 
 jobs:
   build:
@@ -14,18 +17,20 @@ jobs:
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.29.3'  # ✅ 네 로컬 버전에 맞춰줌
+          flutter-version: '3.29.3'
           channel: 'stable'
-          cache: false  # ✅ 캐시 비활성화해서 항상 새로 설치
+          cache: false
 
       - name: Install dependencies
         run: flutter pub get
 
       - name: Build APK (release + dart-define)
-        run: flutter build apk --release --dart-define=BASE_URL=https://api.stockgame.cc
+        run: flutter build apk --release --dart-define=BASE_URL=https://stockgame.cc
 
-      - name: Upload APK artifact
-        uses: actions/upload-artifact@v4
+      - name: Create GitHub Release and Upload APK
+        uses: softprops/action-gh-release@v2
         with:
-          name: release-apk
-          path: build/app/outputs/flutter-apk/app-release.apk
+          files: build/app/outputs/flutter-apk/app-release.apk
+          tag_name: v1.0.${{ github.run_number }}  # 자동 버전 이름 (v1.0.1, v1.0.2, ...)
+          name: Release v1.0.${{ github.run_number }}
+          generate_release_notes: true
