@@ -5,6 +5,7 @@ import 'package:com.jyhong.stock_game/services/auth_service.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:logger/logger.dart';
 
 import 'firebase_options.dart';
@@ -16,10 +17,9 @@ final logger = Logger();
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-
+  await MobileAds.instance.initialize(); // ✅ 광고 초기화
   Get.put(AuthService());
-   
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 final ThemeData darkTheme = ThemeData(
