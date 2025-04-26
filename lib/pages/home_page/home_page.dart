@@ -134,7 +134,6 @@ Widget build(BuildContext context) {
         children: [
           const ListTile(
             title: Text('보유 종목 요약'),
-            trailing: Icon(Icons.arrow_forward_ios),
           ),
           const Divider(height: 1),
           Obx(() {

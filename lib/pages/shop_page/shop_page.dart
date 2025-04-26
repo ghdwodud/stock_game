@@ -1,3 +1,5 @@
+import 'package:com.jyhong.stock_game/pages/home_page/home_controller.dart';
+import 'package:com.jyhong.stock_game/services/api_service.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart'; // ✅ 광고 패키지 추가
@@ -40,23 +42,31 @@ class _ShopPageState extends State<ShopPage> {
     );
   }
 
-  void _watchAdReward() {
+  void _watchAdReward() async {
     if (_isAdLoaded && _rewardedAd != null) {
       _rewardedAd!.show(
-        onUserEarnedReward: (ad, reward) {
+        onUserEarnedReward: (ad, reward) async {
+          try {
+            await ApiService().post('/rewards/watch-ad', {}); // ✅ 서버에 보상 요청
+            await Get.find<HomeController>().fetchPortfolio(
+              showLoading: false,
+            ); // ✅ 내 자산 새로고침
           Get.snackbar('보상 지급', '광고를 시청하고 10,000원이 지급되었습니다!');
+          } catch (e) {
+            print('❌ 광고 보상 지급 실패: $e');
+            Get.snackbar('오류', '보상 지급에 실패했습니다.');
+          }
         },
       );
 
-      // 광고 다 쓰면 새로 로딩
       _rewardedAd!.fullScreenContentCallback = FullScreenContentCallback(
         onAdDismissedFullScreenContent: (ad) {
           ad.dispose();
-          _loadRewardedAd(); // 다시 로딩
+          _loadRewardedAd();
         },
         onAdFailedToShowFullScreenContent: (ad, error) {
           ad.dispose();
-          _loadRewardedAd(); // 실패해도 다시 로딩
+          _loadRewardedAd();
         },
       );
 
@@ -64,10 +74,10 @@ class _ShopPageState extends State<ShopPage> {
       _isAdLoaded = false;
     } else {
       Get.snackbar('광고 준비 중', '잠시 후 다시 시도해주세요.');
-      _loadRewardedAd(); // 로딩 다시 시도
+      _loadRewardedAd();
     }
   }
-
+  
   void _claimDailyReward() {
     Get.snackbar('출석 보상', '오늘의 출석 보상으로 5,000원이 지급되었습니다!');
   }

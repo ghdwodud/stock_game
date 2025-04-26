@@ -4,6 +4,7 @@ import 'package:com.jyhong.stock_game/models/stock_model.dart';
 import 'package:com.jyhong.stock_game/models/user_profile_model.dart';
 import 'package:com.jyhong.stock_game/services/api_service.dart';
 import 'package:com.jyhong.stock_game/services/auth_service.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_navigation/src/snackbar/snackbar.dart';
@@ -33,7 +34,7 @@ class HomeController extends GetxController {
     super.onClose();
   }
 
-  void fetchPortfolio({bool showLoading = true}) async {
+  Future<void> fetchPortfolio({bool showLoading = true}) async {
     if (showLoading) {
     isLoading.value = true;
     }
@@ -41,21 +42,29 @@ class HomeController extends GetxController {
     try {
       final userId = _authService.userUuid;
       final data = await _apiService.get('/users/$userId/portfolio');
-
       userPortfolio.value = UserPortfolioModel.fromJson(data);
     } catch (e, st) {
       print('❌ 포트폴리오 불러오기 실패: $e\n$st');
-      Get.snackbar(
-        '에러',
-        '포트폴리오 정보를 불러오지 못했습니다.',
-        snackPosition: SnackPosition.BOTTOM,
-      );
+      _showErrorSnackbar('포트폴리오 정보를 불러오지 못했습니다.');
     } finally {
       if (showLoading) {
-      isLoading.value = false;
+        isLoading.value = false;
+      }
     }
   }
-}
+
+/// ✅ 에러 스낵바 통일
+  void _showErrorSnackbar(String message) {
+    Get.rawSnackbar(
+      message: message,
+      snackPosition: SnackPosition.BOTTOM,
+      backgroundColor: Colors.redAccent,
+      borderRadius: 8,
+      margin: const EdgeInsets.all(16),
+      duration: const Duration(seconds: 2),
+    );
+  }
+
 Future<StockModel> getStockInfo(int stockId) async {
     final data = await _apiService.get('/stocks/$stockId');
     return StockModel.fromJson(data);

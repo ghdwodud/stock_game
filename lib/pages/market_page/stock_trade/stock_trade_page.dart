@@ -1,4 +1,3 @@
-import 'package:com.jyhong.stock_game/models/stock_model.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -49,32 +48,19 @@ class StockTradePage extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             Obx(() {
-              if (controller.isLoading.value) {
-                return const Center(child: CircularProgressIndicator());
-              }
-
               if (controller.priceHistory.isEmpty) {
                 return const Center(child: Text('차트 데이터 없음'));
               }
-
               return _buildPriceChart(controller.priceHistory);
             }),
             const SizedBox(height: 16),
-            Text('최대 매수 가능 수량: ${controller.maxBuyQuantity}주'),
-            Text('보유 수량: ${controller.holdingQuantity}주'),
+            Obx(
+              () => Text('최대 매수 가능 수량: ${controller.maxBuyQuantityRx.value}주'),
+            ),
+            Obx(() => Text('보유 수량: ${controller.holdingQuantityRx.value}주')),
             const SizedBox(height: 8),
             Row(
               children: [
-                IconButton(
-                  icon: const Icon(Icons.remove),
-                  onPressed: () {
-                    final current =
-                        int.tryParse(controller.qtyController.text) ?? 1;
-                    if (current > 1) {
-                      controller.qtyController.text = (current - 1).toString();
-                    }
-                  },
-                ),
                 Expanded(
                   child: TextField(
                     controller: controller.qtyController,
@@ -93,27 +79,59 @@ class StockTradePage extends StatelessWidget {
                     controller.qtyController.text = (current + 1).toString();
                   },
                 ),
+                IconButton(
+                  icon: const Icon(Icons.remove),
+                  onPressed: () {
+                    final current =
+                        int.tryParse(controller.qtyController.text) ?? 1;
+                    if (current > 1) {
+                      controller.qtyController.text = (current - 1).toString();
+                    }
+                  },
+                ),
+                IconButton(
+                  icon: const Icon(Icons.keyboard_double_arrow_up),
+                  tooltip: '최대 매수 수량',
+                  onPressed: () {
+                    controller.qtyController.text =
+                        controller.maxBuyQuantityRx.value.toString();
+                  },
+                ),
+                IconButton(
+                  icon: const Icon(Icons.keyboard_double_arrow_down),
+                  tooltip: '최대 매도 수량',
+                  onPressed: () {
+                    controller.qtyController.text =
+                        controller.holdingQuantityRx.value.toString();
+                  },
+                ),
               ],
             ),
             const SizedBox(height: 16),
             Row(
               children: [
                 Expanded(
-                  child: ElevatedButton(
-                    onPressed: controller.onBuy,
-                    child: const Text('매수'),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.green,
+                  child: Obx(
+                    () => ElevatedButton(
+                      onPressed:
+                          controller.isLoading.value ? null : controller.onBuy,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.green,
+                      ),
+                      child: const Text('매수'),
                     ),
                   ),
                 ),
                 const SizedBox(width: 10),
                 Expanded(
-                  child: ElevatedButton(
-                    onPressed: controller.onSell,
-                    child: const Text('매도'),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.red,
+                  child: Obx(
+                    () => ElevatedButton(
+                      onPressed:
+                          controller.isLoading.value ? null : controller.onSell,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.red,
+                      ),
+                      child: const Text('매도'),
                     ),
                   ),
                 ),
