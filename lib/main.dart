@@ -21,8 +21,44 @@ void main() async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await MobileAds.instance.initialize(); // ✅ 광고 초기화
   await TranslationService.loadTranslations(); // ✅ JSON 번역 파일 읽기
-  Get.put(AuthService());
-  runApp(const MyApp());
+
+  Get.put(TranslationService()); // ✅ 여기 추가!
+
+  final authService = await Get.putAsync(() => AuthService().init());
+  runApp(MyApp(authService));
+}
+
+class MyApp extends StatelessWidget {
+  final AuthService authService;
+  const MyApp(this.authService, {super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return GetMaterialApp(
+      title: 'Stock Game',
+      debugShowCheckedModeBanner: false,
+      translations: Get.find<TranslationService>(),
+      locale: TranslationService.locale, // ✅ 추가
+      fallbackLocale: TranslationService.fallbackLocale, // ✅ 추가
+      supportedLocales: const [Locale('en', 'US'), Locale('ko', 'KR')],
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+
+      darkTheme: darkTheme,
+      themeMode: ThemeMode.dark,
+
+      initialRoute: authService.isLoggedIn ? '/main' : '/onboarding',
+      getPages: [
+        GetPage(name: '/onboarding', page: () => OnboardingPage()),
+        GetPage(name: '/main', page: () => StockGameMainPage()),
+        GetPage(name: '/market', page: () => MarketPage()),
+        GetPage(name: '/settings', page: () => SettingsPage()),
+      ],
+    );
+  }
 }
 
 final ThemeData darkTheme = ThemeData(
@@ -67,38 +103,4 @@ final ThemeData darkTheme = ThemeData(
   ),
 );
 
-
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return GetMaterialApp(
-      title: 'Stock Game',
-      debugShowCheckedModeBanner: false,
-
-      translations: TranslationService(), // ✅ 추가
-      locale: TranslationService.locale, // ✅ 추가
-      fallbackLocale: TranslationService.fallbackLocale, // ✅ 추가
-      supportedLocales: const [Locale('en', 'US'), Locale('ko', 'KR')],
-      localizationsDelegates: const [
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-      ],
-
-      darkTheme: darkTheme,
-      themeMode: ThemeMode.dark,
-
-      initialRoute: '/onboarding',
-      getPages: [
-        GetPage(name: '/onboarding', page: () => OnboardingPage()),
-        GetPage(name: '/main', page: () => StockGameMainPage()),
-        GetPage(name: '/market', page: () => MarketPage()),
-        GetPage(name: '/settings', page: () => SettingsPage()),
-      ],
-    );
-  }
-}
 
