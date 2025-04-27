@@ -24,6 +24,10 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
+      - name: Create key.properties
+        run: |
+          echo "${{ secrets.KEY_PROPERTIES }}" > android/key.properties
+
       - name: Build APK (release + dart-define)
         run: flutter build apk --release --dart-define=BASE_URL=https://stockgame.cc
 

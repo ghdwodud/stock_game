@@ -1,17 +1,20 @@
 plugins {
     id("com.android.application")
-    // START: FlutterFire Configuration
     id("com.google.gms.google-services")
-    // END: FlutterFire Configuration
     id("kotlin-android")
-    // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
     id("dev.flutter.flutter-gradle-plugin")
+}
+
+import java.util.Properties
+
+val keystoreProperties = Properties().apply {
+    load(file(rootProject.file("key.properties")).inputStream())
 }
 
 android {
     namespace = "com.jyhong.stock_game"
-    compileSdk = 35                       // ✅ Flutter 대신 명시적으로 고정
-    ndkVersion = "27.0.12077973"         // ✅ Firebase가 요구하는 NDK 버전
+    compileSdk = 35
+    ndkVersion = "27.0.12077973"
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
@@ -24,15 +27,30 @@ android {
 
     defaultConfig {
         applicationId = "com.jyhong.stock_game"
-        minSdk = 23                      // ✅ Flutter 기본값 21 → 23으로 수동 고정
+        minSdk = 23
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
     }
 
+    signingConfigs {
+        create("release") {
+            keyAlias = keystoreProperties["keyAlias"] as String
+            keyPassword = keystoreProperties["keyPassword"] as String
+            storeFile = file(keystoreProperties["storeFile"] as String)
+            storePassword = keystoreProperties["storePassword"] as String
+        }
+    }
+
     buildTypes {
-        release {
-            signingConfig = signingConfigs.getByName("debug")
+        getByName("release") {
+            signingConfig = signingConfigs.getByName("release")
+            isMinifyEnabled = false
+            isShrinkResources = false
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
         }
     }
 }
