@@ -42,16 +42,28 @@ class AllStocksPage extends StatelessWidget {
             return ListTile(
               title: Text(stock.name),
               subtitle: Text('₩ ${stock.price.toStringAsFixed(2)}'),
-              trailing: Text(
-                '${stock.changeRate >= 0 ? '+' : ''}${stock.changeRate.toStringAsFixed(2)}%',
-                style: TextStyle(
-                  color: stock.changeRate >= 0 ? Colors.green : Colors.red,
-                ),
+              trailing: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    '${stock.changeRate >= 0 ? '+' : ''}${stock.changeRate.toStringAsFixed(2)}%',
+                    style: TextStyle(
+                      color: stock.changeRate >= 0 ? Colors.green : Colors.red,
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  Icon(
+                    Icons.swap_horiz, // ✅ 트레이딩 느낌 강한 아이콘
+                    size: 24,
+                    color: Colors.grey,
+                  ),
+                ],
               ),
               onTap: () {
                 Get.to(() => StockTradePage(), arguments: stock);
               },
             );
+
           },
         );
       }),

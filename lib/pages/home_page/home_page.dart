@@ -72,7 +72,8 @@ class HomePage extends StatelessWidget {
   }
 
   Widget _buildAssetCard(double total, double cash, double stock, double rate) {
-    final profitRate = (total + cash) / (stock + cash);
+    final initialAsset = 10000; // 초기 지급 금액
+    final profitRate = total / initialAsset;
     final rateColor = profitRate >= 1 ? Colors.green : Colors.red;
     final ratePrefix = profitRate >= 1 ? '+' : '';
 
@@ -83,15 +84,15 @@ class HomePage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('total_assets'.tr, style: const TextStyle(fontSize: 16)), // ✅
+            Text('total_assets'.tr, style: const TextStyle(fontSize: 16)),
             const SizedBox(height: 8),
             Text(
               '₩ ${_formatNumber(total)}',
               style: const TextStyle(fontSize: 24),
             ),
             const SizedBox(height: 8),
-            Text('${'cash'.tr}: ₩ ${_formatNumber(cash)}'), // ✅
-            Text('${'stock_value'.tr}: ₩ ${_formatNumber(stock)}'), // ✅
+            Text('${'cash'.tr}: ₩ ${_formatNumber(cash)}'),
+            Text('${'stock_value'.tr}: ₩ ${_formatNumber(stock)}'),
             const SizedBox(height: 4),
             Text(
               '${'profit_rate'.tr}: $ratePrefix${((profitRate - 1) * 100).toStringAsFixed(2)}%',
@@ -102,6 +103,7 @@ class HomePage extends StatelessWidget {
       ),
     );
   }
+
 
   Widget _buildEventBanner() {
     return Card(
@@ -125,8 +127,7 @@ class HomePage extends StatelessWidget {
       child: Column(
         children: [
           ListTile(
-            title: Text('my_stocks_summary'.tr), // ✅
-          ),
+          title: Text('my_stocks_summary'.tr)),
           const Divider(height: 1),
           Obx(() {
             final holdings = controller.userPortfolio.value?.holdings ?? [];
@@ -134,7 +135,7 @@ class HomePage extends StatelessWidget {
             if (holdings.isEmpty) {
               return Padding(
                 padding: const EdgeInsets.all(16.0),
-                child: Center(child: Text('no_stocks'.tr)), // ✅
+                child: Center(child: Text('no_stocks'.tr)),
               );
             }
 
@@ -145,7 +146,7 @@ class HomePage extends StatelessWidget {
                       future: controller.getStockInfo(holding.stockId),
                       builder: (context, snapshot) {
                         if (!snapshot.hasData) {
-                          return ListTile(title: Text('loading'.tr)); // ✅
+                          return ListTile(title: Text('loading'.tr));
                         }
 
                         final stock = snapshot.data!;
@@ -157,9 +158,29 @@ class HomePage extends StatelessWidget {
 
                         return ListTile(
                           title: Text(stock.symbol),
-                          subtitle: Text(
-                            '${holding.quantity}${'shares'.tr}',
-                          ), // ✅
+                          subtitle: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                '${holding.quantity}${'shares'.tr}',
+                              ), // 보유 수량
+                              Text(
+                                '${'current_price'.tr}: ₩${_formatNumber(stock.price)}',
+                                style: const TextStyle(
+                                  fontSize: 12,
+                                  color: Colors.grey,
+                                ),
+                              ), // ✅ 현재가
+                              Text(
+                                '${'buy_price'.tr}: ₩${_formatNumber(holding.avgBuyPrice)}',
+                                style: const TextStyle(
+                                  fontSize: 12,
+                                  color: Colors.grey,
+                                ),
+                              ), // ✅ 매수단가
+                            ],
+                          ),
+
                           trailing: Text(
                             '${profitRate >= 0 ? '+' : ''}${(profitRate * 100).toStringAsFixed(2)}%',
                             style: TextStyle(
@@ -177,6 +198,7 @@ class HomePage extends StatelessWidget {
       ),
     );
   }
+
 
   Widget _buildErrorCard(String message, {VoidCallback? retry}) {
     return Card(
@@ -196,9 +218,12 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  String _formatNumber(num value) {
-    return value
-        .toStringAsFixed(0)
-        .replaceAllMapped(RegExp(r'\B(?=(\d{3})+(?!\d))'), (match) => ',');
+String _formatNumber(double number) {
+    return number
+        .toStringAsFixed(2)
+        .replaceAllMapped(
+          RegExp(r'(\d)(?=(\d{3})+\.)'),
+          (Match match) => '${match.group(1)},',
+        );
   }
 }
