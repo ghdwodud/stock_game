@@ -37,27 +37,34 @@ class StockTradePage extends StatelessWidget {
     final stock = controller.stock;
 
     return Scaffold(
-      appBar: AppBar(title: Text('${stock.name} 거래')),
+      appBar: AppBar(title: Text('${stock.name} ${'trade'.tr}')), // ✅
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('현재가: ₩ ${stock.price.toStringAsFixed(2)}',
+            Text(
+              '${'current_price'.tr}: ₩ ${stock.price.toStringAsFixed(2)}', // ✅
               style: const TextStyle(fontSize: 18),
             ),
             const SizedBox(height: 16),
             Obx(() {
               if (controller.priceHistory.isEmpty) {
-                return const Center(child: Text('차트 데이터 없음'));
+                return Center(child: Text('no_chart_data'.tr)); // ✅
               }
               return _buildPriceChart(controller.priceHistory);
             }),
             const SizedBox(height: 16),
             Obx(
-              () => Text('최대 매수 가능 수량: ${controller.maxBuyQuantityRx.value}주'),
+              () => Text(
+                '${'max_buy_quantity'.tr}: ${controller.maxBuyQuantityRx.value}${'shares'.tr}',
+              ), // ✅
             ),
-            Obx(() => Text('보유 수량: ${controller.holdingQuantityRx.value}주')),
+            Obx(
+              () => Text(
+                '${'holding_quantity'.tr}: ${controller.holdingQuantityRx.value}${'shares'.tr}',
+              ), // ✅
+            ),
             const SizedBox(height: 8),
             Row(
               children: [
@@ -65,14 +72,15 @@ class StockTradePage extends StatelessWidget {
                   child: TextField(
                     controller: controller.qtyController,
                     keyboardType: TextInputType.number,
-                    decoration: const InputDecoration(
-                      labelText: '수량 입력',
-                      border: OutlineInputBorder(),
+                    decoration: InputDecoration(
+                      labelText: 'enter_quantity'.tr, // ✅
+                      border: const OutlineInputBorder(),
                     ),
                   ),
                 ),
                 IconButton(
                   icon: const Icon(Icons.add),
+                  tooltip: 'increase_quantity'.tr, // ✅
                   onPressed: () {
                     final current =
                         int.tryParse(controller.qtyController.text) ?? 0;
@@ -81,6 +89,7 @@ class StockTradePage extends StatelessWidget {
                 ),
                 IconButton(
                   icon: const Icon(Icons.remove),
+                  tooltip: 'decrease_quantity'.tr, // ✅
                   onPressed: () {
                     final current =
                         int.tryParse(controller.qtyController.text) ?? 1;
@@ -91,7 +100,7 @@ class StockTradePage extends StatelessWidget {
                 ),
                 IconButton(
                   icon: const Icon(Icons.keyboard_double_arrow_up),
-                  tooltip: '최대 매수 수량',
+                  tooltip: 'max_buy'.tr, // ✅
                   onPressed: () {
                     controller.qtyController.text =
                         controller.maxBuyQuantityRx.value.toString();
@@ -99,7 +108,7 @@ class StockTradePage extends StatelessWidget {
                 ),
                 IconButton(
                   icon: const Icon(Icons.keyboard_double_arrow_down),
-                  tooltip: '최대 매도 수량',
+                  tooltip: 'max_sell'.tr, // ✅
                   onPressed: () {
                     controller.qtyController.text =
                         controller.holdingQuantityRx.value.toString();
@@ -118,7 +127,7 @@ class StockTradePage extends StatelessWidget {
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.green,
                       ),
-                      child: const Text('매수'),
+                      child: Text('buy'.tr), // ✅
                     ),
                   ),
                 ),
@@ -131,7 +140,7 @@ class StockTradePage extends StatelessWidget {
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.red,
                       ),
-                      child: const Text('매도'),
+                      child: Text('sell'.tr), // ✅
                     ),
                   ),
                 ),

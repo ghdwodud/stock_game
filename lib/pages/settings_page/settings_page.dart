@@ -19,7 +19,6 @@ class _SettingsPageState extends State<SettingsPage> {
   @override
   void initState() {
     super.initState();
-    // 초기값은 현재 locale 기준
     final current = Get.locale?.languageCode;
     _selectedLanguage = current == 'en' ? 'English' : '한국어';
   }
@@ -30,19 +29,22 @@ class _SettingsPageState extends State<SettingsPage> {
       _selectedLanguage = lang;
     });
     Get.updateLocale(locale);
-    Get.snackbar('언어 변경됨', '$lang 로 언어가 변경되었습니다.');
+    Get.snackbar(
+      'language_changed'.tr,
+      '${lang} ${'language_changed_success'.tr}',
+    );
   }
 
   void _resetData() {
     Get.defaultDialog(
-      title: '초기화',
-      middleText: '모든 데이터를 초기화하시겠습니까?',
-      textCancel: '취소',
-      textConfirm: '확인',
+      title: 'reset'.tr,
+      middleText: 'reset_confirm'.tr,
+      textCancel: 'cancel'.tr,
+      textConfirm: 'ok'.tr,
       onConfirm: () {
         // TODO: 리셋 로직
         Get.back();
-        Get.snackbar('초기화 완료', '데이터가 초기화되었습니다.');
+        Get.snackbar('reset_complete'.tr, 'reset_success'.tr);
       },
     );
   }
@@ -51,15 +53,15 @@ class _SettingsPageState extends State<SettingsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('설정'),
+        title: Text('settings'.tr),
         centerTitle: true,
       ),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          const Text(
-            '언어 설정',
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          Text(
+            'language'.tr,
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 8),
           DropdownButton<String>(
@@ -73,10 +75,17 @@ class _SettingsPageState extends State<SettingsPage> {
               if (val != null) _changeLanguage(val);
             },
           ),
-          const Divider(height: 32),
-          ListTile(title: const Text('데이터 초기화'), onTap: _resetData),
           const Divider(),
-          const ListTile(title: Text('앱 버전'), subtitle: Text('v0.1.0')),
+
+          // 데이터 초기화 기능은 잠깐 주석 처리해둔 상태
+          // ListTile(
+          //   title: Text('reset'.tr),
+          //   onTap: _resetData,
+          // ),
+          ListTile(
+            title: Text('app_version'.tr),
+            subtitle: const Text('v0.1.0'),
+          ),
         ],
       ),
     );

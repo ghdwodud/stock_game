@@ -1,9 +1,10 @@
+import 'package:com.jyhong.stock_game/110n/translation.dart';
 import 'package:com.jyhong.stock_game/pages/market_page/market_page.dart';
-import 'package:com.jyhong.stock_game/pages/portfolio_page/portfolio_page.dart';
 import 'package:com.jyhong.stock_game/pages/settings_page/settings_page.dart';
 import 'package:com.jyhong.stock_game/services/auth_service.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:get/get.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:logger/logger.dart';
@@ -12,12 +13,14 @@ import 'firebase_options.dart';
 import 'pages/onboarding/onboarding_page.dart';
 import 'pages/stock_game_main_page.dart';
 
+
 final logger = Logger();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await MobileAds.instance.initialize(); // ✅ 광고 초기화
+  await TranslationService.loadTranslations(); // ✅ JSON 번역 파일 읽기
   Get.put(AuthService());
   runApp(const MyApp());
 }
@@ -74,9 +77,18 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       title: 'Stock Game',
       debugShowCheckedModeBanner: false,
-      // 라이트 모드 테마 설정 (사용자가 라이트 모드로 전환 시 적용)
+
+      translations: TranslationService(), // ✅ 추가
+      locale: TranslationService.locale, // ✅ 추가
+      fallbackLocale: TranslationService.fallbackLocale, // ✅ 추가
+      supportedLocales: const [Locale('en', 'US'), Locale('ko', 'KR')],
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+
       darkTheme: darkTheme,
-      // 기본적으로 다크 모드 적용
       themeMode: ThemeMode.dark,
 
       initialRoute: '/onboarding',
@@ -84,9 +96,9 @@ class MyApp extends StatelessWidget {
         GetPage(name: '/onboarding', page: () => OnboardingPage()),
         GetPage(name: '/main', page: () => StockGameMainPage()),
         GetPage(name: '/market', page: () => MarketPage()),
-        GetPage(name: '/portfolio', page: () => PortfolioPage()),
         GetPage(name: '/settings', page: () => SettingsPage()),
       ],
     );
   }
 }
+

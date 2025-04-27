@@ -51,10 +51,10 @@ class _ShopPageState extends State<ShopPage> {
             await Get.find<HomeController>().fetchPortfolio(
               showLoading: false,
             ); // ✅ 내 자산 새로고침
-          Get.snackbar('보상 지급', '광고를 시청하고 10,000원이 지급되었습니다!');
+            Get.snackbar('reward_success'.tr, 'watch_ad_reward_success'.tr);
           } catch (e) {
             print('❌ 광고 보상 지급 실패: $e');
-            Get.snackbar('오류', '보상 지급에 실패했습니다.');
+            Get.snackbar('error'.tr, 'watch_ad_reward_fail'.tr);
           }
         },
       );
@@ -73,13 +73,13 @@ class _ShopPageState extends State<ShopPage> {
       _rewardedAd = null;
       _isAdLoaded = false;
     } else {
-      Get.snackbar('광고 준비 중', '잠시 후 다시 시도해주세요.');
+      Get.snackbar('ad_loading'.tr, 'please_try_again_later'.tr);
       _loadRewardedAd();
     }
   }
   
   void _claimDailyReward() {
-    Get.snackbar('출석 보상', '오늘의 출석 보상으로 5,000원이 지급되었습니다!');
+    Get.snackbar('daily_reward'.tr, 'daily_reward_success'.tr);
   }
 
   @override
@@ -91,7 +91,7 @@ class _ShopPageState extends State<ShopPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('상점')),
+      appBar: AppBar(title: Text('shop'.tr), centerTitle: true),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -99,20 +99,21 @@ class _ShopPageState extends State<ShopPage> {
             ElevatedButton.icon(
               onPressed: _watchAdReward,
               icon: const Icon(Icons.ondemand_video),
-              label: const Text('광고 보고 보상 받기'),
+              label: Text('watch_ad_reward'.tr),
               style: ElevatedButton.styleFrom(
                 minimumSize: const Size.fromHeight(50),
               ),
             ),
             const SizedBox(height: 16),
-            ElevatedButton.icon(
-              onPressed: _claimDailyReward,
-              icon: const Icon(Icons.calendar_today),
-              label: const Text('출석 보상 받기'),
-              style: ElevatedButton.styleFrom(
-                minimumSize: const Size.fromHeight(50),
-              ),
-            ),
+            // 출석 보상 버튼은 일단 주석 처리된 상태
+            // ElevatedButton.icon(
+            //   onPressed: _claimDailyReward,
+            //   icon: const Icon(Icons.calendar_today),
+            //   label: Text('daily_reward'.tr),
+            //   style: ElevatedButton.styleFrom(
+            //     minimumSize: const Size.fromHeight(50),
+            //   ),
+            // ),
           ],
         ),
       ),

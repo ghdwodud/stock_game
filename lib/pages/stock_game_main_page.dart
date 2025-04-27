@@ -3,6 +3,7 @@ import 'package:com.jyhong.stock_game/pages/market_page/all_stocks/all_stocks_pa
 import 'package:com.jyhong.stock_game/pages/shop_page/shop_page.dart';
 import 'package:com.jyhong.stock_game/pages/settings_page/settings_page.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class StockGameMainPage extends StatefulWidget {
   @override
@@ -33,11 +34,18 @@ class _StockGameMainPageState extends State<StockGameMainPage> {
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
         type: BottomNavigationBarType.fixed,
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: '홈'),
-          BottomNavigationBarItem(icon: Icon(Icons.show_chart), label: '시장'),
-          BottomNavigationBarItem(icon: Icon(Icons.store), label: '상점'),
-          BottomNavigationBarItem(icon: Icon(Icons.settings), label: '설정'),
+        items: [
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'home'.tr),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.show_chart),
+            label: 'market'.tr,
+          ),
+          BottomNavigationBarItem(icon: Icon(Icons.store), label: 'shop'.tr),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.settings),
+            label: 'settings'.tr,
+          ),
+
         ],
       ),
     );

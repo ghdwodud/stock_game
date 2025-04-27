@@ -19,12 +19,12 @@ class OnboardingPage extends StatelessWidget {
             const Spacer(flex: 2),
 
             Text(
-              "📈 Stock Game",
-              style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
+              "app_name".tr, // ✅ 앱 이름
+              style: const TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
             Text(
-              "모의투자 게임을 시작해보세요!",
+              "welcome_subtitle".tr, // ✅ 서브 타이틀
               style: TextStyle(fontSize: 16, color: Colors.grey[600]),
             ),
 
@@ -33,12 +33,13 @@ class OnboardingPage extends StatelessWidget {
             ElevatedButton(
               onPressed: controller.loginWithGoogle,
               style: ElevatedButton.styleFrom(
-                minimumSize: Size(double.infinity, 48),
+                minimumSize: const Size(double.infinity, 48),
               ),
-              child: const Text("Google 계정으로 로그인"),
+              child: Text("login_with_google".tr), // ✅ 구글 로그인
             ),
             const SizedBox(height: 16),
 
+            // 나중에 애플 로그인 활성화할 때
             // SignInWithAppleButton(
             //   onPressed: () {
             //     // TODO: controller.loginWithApple()
@@ -50,9 +51,9 @@ class OnboardingPage extends StatelessWidget {
             OutlinedButton(
               onPressed: controller.loginAsGuest,
               style: OutlinedButton.styleFrom(
-                minimumSize: Size(double.infinity, 48),
+                minimumSize: const Size(double.infinity, 48),
               ),
-              child: const Text("게스트로 체험하기"),
+              child: Text("try_as_guest".tr), // ✅ 게스트 체험
             ),
 
             const Spacer(),

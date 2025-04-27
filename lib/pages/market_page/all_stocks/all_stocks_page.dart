@@ -9,11 +9,14 @@ class AllStocksPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('전체 주식 목록')),
+      appBar: AppBar(
+        title: Text('all_stocks'.tr),
+        centerTitle: true,
+      ), // ✅ tr 적용
+
       body: Obx(() {
-        // 새로고침 중일 때는 로딩 화면 안 띄우기
         if (controller.isLoading.value && !controller.isRefreshing.value) {
-          return Center(child: CircularProgressIndicator()); // 로딩 UI
+          return const Center(child: CircularProgressIndicator());
         }
 
         if (controller.allStocks.isEmpty) {
@@ -21,11 +24,11 @@ class AllStocksPage extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text('불러올 주식이 없습니다.'),
-                SizedBox(height: 16),
+                Text('no_stocks_to_load'.tr), // ✅
+                const SizedBox(height: 16),
                 ElevatedButton(
                   onPressed: controller.fetchAllStocks,
-                  child: Text('다시 시도'),
+                  child: Text('retry'.tr), // ✅
                 ),
               ],
             ),
