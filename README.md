@@ -25,9 +25,13 @@ NestJS 기반 백엔드 서버와 연동하여 로그인, 자산 확인, 주식 
 
 ## 🖼️ 스크린샷
 
-| 대시보드 | 종목 목록 | 매수/매도 |
-|----------|------------|-----------|
-| ![dashboard](screenshots/dashboard.png) | ![market](screenshots/market.png) | ![trade](screenshots/trade.png) |
+| 로그인 | 대시보드 | 종목 목록 |
+|--------|-----------|------------|
+| ![login](screenshots/login.jpg) | ![dashboard](screenshots/dashboard.jpg) | ![stocks](screenshots/stocks.jpg) |
+
+| 개별 종목 거래 | 상점 (광고 보상) | 설정 |
+|----------------|-------------------|------|
+| ![trade](screenshots/trade.jpg) | ![shop](screenshots/shop.jpg) | ![settings](screenshots/settings.jpg) |
 
 ---
 
