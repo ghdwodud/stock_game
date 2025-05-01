@@ -1,5 +1,4 @@
 import 'package:com.jyhong.stock_game/110n/translation.dart';
-import 'package:com.jyhong.stock_game/pages/market_page/market_page.dart';
 import 'package:com.jyhong.stock_game/pages/settings_page/settings_page.dart';
 import 'package:com.jyhong.stock_game/services/auth_service.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -54,7 +53,6 @@ class MyApp extends StatelessWidget {
       getPages: [
         GetPage(name: '/onboarding', page: () => OnboardingPage()),
         GetPage(name: '/main', page: () => StockGameMainPage()),
-        GetPage(name: '/market', page: () => MarketPage()),
         GetPage(name: '/settings', page: () => SettingsPage()),
       ],
     );

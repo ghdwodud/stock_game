@@ -1,3 +1,4 @@
+import 'package:com.jyhong.stock_game/common/widgets/common_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -50,44 +51,73 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   @override
-  Widget build(BuildContext context) {
+Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('settings'.tr),
-        centerTitle: true,
-      ),
+      appBar: CommonAppBar(title: 'settings'.tr),
       body: ListView(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(20),
         children: [
           Text(
             'language'.tr,
-            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
-          const SizedBox(height: 8),
-          DropdownButton<String>(
-            value: _selectedLanguage,
-            isExpanded: true,
-            items:
-                _languages.keys.map((lang) {
-                  return DropdownMenuItem(value: lang, child: Text(lang));
-                }).toList(),
-            onChanged: (val) {
-              if (val != null) _changeLanguage(val);
-            },
+          const SizedBox(height: 12),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12),
+            decoration: BoxDecoration(
+              border: Border.all(color: Colors.grey.shade300),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: DropdownButtonHideUnderline(
+              child: DropdownButton<String>(
+                value: _selectedLanguage,
+                isExpanded: true,
+                icon: const Icon(Icons.arrow_drop_down),
+                style: const TextStyle(fontSize: 16, color: Colors.black),
+                items:
+                    _languages.keys.map((lang) {
+                      return DropdownMenuItem(
+                        value: lang,
+                        child: Text(
+                          lang,
+                          style: const TextStyle(
+                            fontSize: 16,
+                            color: Colors.white,
+                          ),
+                        ),
+                      );
+                    }).toList(),
+                onChanged: (val) {
+                  if (val != null) _changeLanguage(val);
+                },
+              ),
+            ),
           ),
-          const Divider(),
 
-          // 데이터 초기화 기능은 잠깐 주석 처리해둔 상태
+          const SizedBox(height: 24),
+          const Divider(thickness: 1),
+          const SizedBox(height: 16),
+
+          ListTile(
+            title: Text(
+              'app_version'.tr,
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+            ),
+            subtitle: const Text(
+              'v0.1.0',
+              style: TextStyle(fontSize: 14, color: Colors.grey),
+            ),
+          ),
+
+          // 데이터 초기화 기능 필요 시 여기에 다시 추가 가능
+          // const SizedBox(height: 24),
           // ListTile(
-          //   title: Text('reset'.tr),
+          //   title: Text('reset'.tr, style: TextStyle(fontSize: 16)),
           //   onTap: _resetData,
           // ),
-          ListTile(
-            title: Text('app_version'.tr),
-            subtitle: const Text('v0.1.0'),
-          ),
         ],
       ),
     );
   }
+
 }

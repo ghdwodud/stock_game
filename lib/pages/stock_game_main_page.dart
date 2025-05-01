@@ -34,6 +34,14 @@ class _StockGameMainPageState extends State<StockGameMainPage> {
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
         type: BottomNavigationBarType.fixed,
+        selectedItemColor: Colors.blueAccent, // 선택된 탭 강조 색
+        unselectedItemColor: Colors.grey,
+        selectedLabelStyle: const TextStyle(
+          fontSize: 13,
+          fontWeight: FontWeight.bold,
+        ),
+        unselectedLabelStyle: const TextStyle(fontSize: 12),
+        iconSize: 28, // 모든 아이콘 기본 크기
         items: [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'home'.tr),
           BottomNavigationBarItem(
@@ -45,9 +53,9 @@ class _StockGameMainPageState extends State<StockGameMainPage> {
             icon: Icon(Icons.settings),
             label: 'settings'.tr,
           ),
-
         ],
       ),
+
     );
   }
 }

@@ -1,3 +1,4 @@
+import 'package:com.jyhong.stock_game/common/widgets/common_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'all_stocks_controller.dart';
@@ -9,10 +10,7 @@ class AllStocksPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('all_stocks'.tr),
-        centerTitle: true,
-      ), // ✅ tr 적용
+      appBar: CommonAppBar(title: 'all_stocks'.tr), // ✅ tr 적용
 
       body: Obx(() {
         if (controller.isLoading.value && !controller.isRefreshing.value) {
@@ -36,36 +34,62 @@ class AllStocksPage extends StatelessWidget {
         }
 
         return ListView.builder(
+          padding: const EdgeInsets.symmetric(vertical: 8),
           itemCount: controller.allStocks.length,
           itemBuilder: (context, index) {
             final stock = controller.allStocks[index];
-            return ListTile(
-              title: Text(stock.name),
-              subtitle: Text('₩ ${stock.price.toStringAsFixed(2)}'),
-              trailing: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    '${stock.changeRate >= 0 ? '+' : ''}${stock.changeRate.toStringAsFixed(2)}%',
-                    style: TextStyle(
-                      color: stock.changeRate >= 0 ? Colors.green : Colors.red,
+            return Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              child: Card(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                elevation: 1,
+                child: ListTile(
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 12,
+                  ),
+                  title: Text(
+                    stock.name,
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
-                  const SizedBox(width: 10),
-                  Icon(
-                    Icons.swap_horiz, // ✅ 트레이딩 느낌 강한 아이콘
-                    size: 24,
-                    color: Colors.grey,
+                  subtitle: Text(
+                    '₩ ${stock.price.toStringAsFixed(2)}',
+                    style: const TextStyle(fontSize: 14, color: Colors.grey),
                   ),
-                ],
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        '${stock.changeRate >= 0 ? '+' : ''}${stock.changeRate.toStringAsFixed(2)}%',
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                          color:
+                              stock.changeRate >= 0 ? Colors.green : Colors.red,
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      const Icon(
+                        Icons.swap_horiz,
+                        size: 24,
+                        color: Colors.grey,
+                      ),
+                    ],
+                  ),
+                  onTap: () {
+                    Get.to(() => StockTradePage(), arguments: stock);
+                  },
+                ),
               ),
-              onTap: () {
-                Get.to(() => StockTradePage(), arguments: stock);
-              },
             );
-
           },
         );
+
       }),
     );
   }

@@ -64,7 +64,7 @@ Widget build(BuildContext context) {
       children: [
         Text(
           '${'current_price'.tr}: ₩ ${stock.price.toStringAsFixed(2)}',
-          style: const TextStyle(fontSize: 18),
+          style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 16),
         Obx(() {
@@ -77,23 +77,27 @@ Widget build(BuildContext context) {
     );
   }
 
-  Widget _buildHoldingsInfo() {
+Widget _buildHoldingsInfo() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Obx(
           () => Text(
             '${'max_buy_quantity'.tr}: ${controller.maxBuyQuantityRx.value}${'shares'.tr}',
+            style: const TextStyle(fontSize: 16, color: Colors.grey),
           ),
         ),
+        const SizedBox(height: 4),
         Obx(
           () => Text(
             '${'holding_quantity'.tr}: ${controller.holdingQuantityRx.value}${'shares'.tr}',
+            style: const TextStyle(fontSize: 16, color: Colors.grey),
           ),
         ),
       ],
     );
   }
+
 
   Widget _buildQuantityInput() {
     return Row(
@@ -102,14 +106,17 @@ Widget build(BuildContext context) {
           child: TextField(
             controller: controller.qtyController,
             keyboardType: TextInputType.number,
+            style: const TextStyle(fontSize: 16),
             decoration: InputDecoration(
               labelText: 'enter_quantity'.tr,
+              labelStyle: const TextStyle(fontSize: 14),
               border: const OutlineInputBorder(),
             ),
           ),
         ),
+        const SizedBox(width: 8),
         IconButton(
-          icon: const Icon(Icons.add),
+          icon: const Icon(Icons.add, size: 24),
           tooltip: 'increase_quantity'.tr,
           onPressed: () {
             final current = int.tryParse(controller.qtyController.text) ?? 0;
@@ -117,7 +124,7 @@ Widget build(BuildContext context) {
           },
         ),
         IconButton(
-          icon: const Icon(Icons.remove),
+          icon: const Icon(Icons.remove, size: 24),
           tooltip: 'decrease_quantity'.tr,
           onPressed: () {
             final current = int.tryParse(controller.qtyController.text) ?? 1;
@@ -126,6 +133,7 @@ Widget build(BuildContext context) {
             }
           },
         ),
+        const SizedBox(width: 8),
         Column(
           children: [
             IconButton(
@@ -135,7 +143,7 @@ Widget build(BuildContext context) {
                     controller.maxBuyQuantityRx.value.toString();
               },
             ),
-            Text('max_buy'.tr, style: const TextStyle(fontSize: 10)),
+            const Text('최대매수', style: TextStyle(fontSize: 12)),
           ],
         ),
         Column(
@@ -147,12 +155,13 @@ Widget build(BuildContext context) {
                     controller.holdingQuantityRx.value.toString();
               },
             ),
-            Text('max_sell'.tr, style: const TextStyle(fontSize: 10)),
+            const Text('최대매도', style: TextStyle(fontSize: 12)),
           ],
         ),
       ],
     );
   }
+
 
   Widget _buildActionButtons() {
     return Row(
@@ -161,7 +170,14 @@ Widget build(BuildContext context) {
           child: Obx(
             () => ElevatedButton(
               onPressed: controller.isLoading.value ? null : controller.onBuy,
-              style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.green,
+                padding: const EdgeInsets.symmetric(vertical: 14),
+                textStyle: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
               child: Text('buy'.tr),
             ),
           ),
@@ -171,7 +187,14 @@ Widget build(BuildContext context) {
           child: Obx(
             () => ElevatedButton(
               onPressed: controller.isLoading.value ? null : controller.onSell,
-              style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.red,
+                padding: const EdgeInsets.symmetric(vertical: 14),
+                textStyle: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
               child: Text('sell'.tr),
             ),
           ),
@@ -179,5 +202,4 @@ Widget build(BuildContext context) {
       ],
     );
   }
-
 }

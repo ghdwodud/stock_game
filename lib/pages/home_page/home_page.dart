@@ -1,3 +1,4 @@
+import 'package:com.jyhong.stock_game/common/widgets/common_app_bar.dart';
 import 'package:com.jyhong.stock_game/pages/home_page/home_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -5,10 +6,12 @@ import 'package:get/get.dart';
 class HomePage extends StatelessWidget {
   final controller = Get.put(HomeController());
 
+  HomePage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('home'.tr), centerTitle: true), // ✅ Home tr 처리
+      appBar: CommonAppBar(title: 'home'.tr),
       body: Obx(() {
         if (controller.isLoading.value) {
           return const Center(child: CircularProgressIndicator());
@@ -17,14 +20,14 @@ class HomePage extends StatelessWidget {
         final portfolio = controller.userPortfolio.value;
 
         return ListView(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
           children: [
             if (portfolio != null)
               _buildUserCard(portfolio.nickname)
             else
               _buildErrorCard('user_info_load_fail'.tr),
 
-            const SizedBox(height: 16),
+            const SizedBox(height: 24),
 
             if (portfolio != null)
               _buildAssetCard(
@@ -39,9 +42,9 @@ class HomePage extends StatelessWidget {
                 retry: controller.fetchPortfolio,
               ),
 
-            const SizedBox(height: 16),
+            const SizedBox(height: 24),
             //_buildEventBanner(),
-            const SizedBox(height: 16),
+            const SizedBox(height: 24),
             _buildMyStocksPreview(),
           ],
         );
@@ -51,18 +54,27 @@ class HomePage extends StatelessWidget {
 
   Widget _buildUserCard(String nickname) {
     return Card(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(20),
         child: Row(
           children: [
             const CircleAvatar(child: Icon(Icons.person)),
-            const SizedBox(width: 12),
+            const SizedBox(width: 16),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(nickname, style: const TextStyle(fontSize: 16)),
-                Text('beginner_investor'.tr), // ✅ '초보 투자자'
+                Text(
+                  nickname,
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Text(
+                  'beginner_investor'.tr,
+                  style: const TextStyle(fontSize: 14, color: Colors.grey),
+                ),
               ],
             ),
           ],
@@ -72,31 +84,44 @@ class HomePage extends StatelessWidget {
   }
 
   Widget _buildAssetCard(double total, double cash, double stock, double rate) {
-    final initialAsset = 10000; // 초기 지급 금액
+    final initialAsset = 10000;
     final profitRate = total / initialAsset;
     final rateColor = profitRate >= 1 ? Colors.green : Colors.red;
     final ratePrefix = profitRate >= 1 ? '+' : '';
 
     return Card(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('total_assets'.tr, style: const TextStyle(fontSize: 16)),
-            const SizedBox(height: 8),
+            Text(
+              'total_assets'.tr,
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 12),
             Text(
               '₩ ${_formatNumber(total)}',
-              style: const TextStyle(fontSize: 24),
+              style: const TextStyle(
+                fontSize: 26,
+                fontWeight: FontWeight.bold,
+                height: 1.3,
+              ),
+            ),
+            const SizedBox(height: 12),
+            Text(
+              '${'cash'.tr}: ₩ ${_formatNumber(cash)}',
+              style: const TextStyle(fontSize: 14, color: Colors.grey),
+            ),
+            Text(
+              '${'stock_value'.tr}: ₩ ${_formatNumber(stock)}',
+              style: const TextStyle(fontSize: 14, color: Colors.grey),
             ),
             const SizedBox(height: 8),
-            Text('${'cash'.tr}: ₩ ${_formatNumber(cash)}'),
-            Text('${'stock_value'.tr}: ₩ ${_formatNumber(stock)}'),
-            const SizedBox(height: 4),
             Text(
               '${'profit_rate'.tr}: $ratePrefix${((profitRate - 1) * 100).toStringAsFixed(2)}%',
-              style: TextStyle(color: rateColor),
+              style: TextStyle(fontSize: 14, color: rateColor),
             ),
           ],
         ),
@@ -104,37 +129,19 @@ class HomePage extends StatelessWidget {
     );
   }
 
-
-  Widget _buildEventBanner() {
-    return Card(
-      color: Colors.orange.shade100,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: ListTile(
-        leading: const Icon(Icons.campaign),
-        title: Text('attendance_event'.tr), // ✅
-        subtitle: Text('attendance_event_detail'.tr), // ✅
-        trailing: const Icon(Icons.arrow_forward_ios),
-        onTap: () {
-          Get.snackbar('event'.tr, 'check_in_shop'.tr); // ✅
-        },
-      ),
-    );
-  }
-
   Widget _buildMyStocksPreview() {
     return Card(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       child: Column(
         children: [
-          ListTile(
-          title: Text('my_stocks_summary'.tr)),
+          ListTile(title: Text('my_stocks_summary'.tr)),
           const Divider(height: 1),
           Obx(() {
             final holdings = controller.userPortfolio.value?.holdings ?? [];
 
             if (holdings.isEmpty) {
               return Padding(
-                padding: const EdgeInsets.all(16.0),
+                padding: const EdgeInsets.all(20),
                 child: Center(child: Text('no_stocks'.tr)),
               );
             }
@@ -157,33 +164,39 @@ class HomePage extends StatelessWidget {
                                 : 0.0;
 
                         return ListTile(
-                          title: Text(stock.symbol),
+                          title: Text(
+                            stock.symbol,
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                           subtitle: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                '${holding.quantity}${'shares'.tr}',
-                              ), // 보유 수량
+                              Text('${holding.quantity}${'shares'.tr}'),
+                              const SizedBox(height: 4),
                               Text(
                                 '${'current_price'.tr}: ₩${_formatNumber(stock.price)}',
                                 style: const TextStyle(
-                                  fontSize: 12,
+                                  fontSize: 14,
                                   color: Colors.grey,
                                 ),
-                              ), // ✅ 현재가
+                              ),
                               Text(
                                 '${'buy_price'.tr}: ₩${_formatNumber(holding.avgBuyPrice)}',
                                 style: const TextStyle(
-                                  fontSize: 12,
+                                  fontSize: 14,
                                   color: Colors.grey,
                                 ),
-                              ), // ✅ 매수단가
+                              ),
                             ],
                           ),
-
                           trailing: Text(
                             '${profitRate >= 0 ? '+' : ''}${(profitRate * 100).toStringAsFixed(2)}%',
                             style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
                               color:
                                   profitRate >= 0 ? Colors.green : Colors.red,
                             ),
@@ -199,18 +212,17 @@ class HomePage extends StatelessWidget {
     );
   }
 
-
   Widget _buildErrorCard(String message, {VoidCallback? retry}) {
     return Card(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(20),
         child: Column(
           children: [
-            Text(message),
+            Text(message, style: const TextStyle(fontSize: 14)),
             if (retry != null) ...[
-              const SizedBox(height: 8),
-              ElevatedButton(onPressed: retry, child: Text('retry'.tr)), // ✅
+              const SizedBox(height: 12),
+              ElevatedButton(onPressed: retry, child: Text('retry'.tr)),
             ],
           ],
         ),
@@ -218,7 +230,7 @@ class HomePage extends StatelessWidget {
     );
   }
 
-String _formatNumber(double number) {
+  String _formatNumber(double number) {
     return number
         .toStringAsFixed(2)
         .replaceAllMapped(

@@ -1,3 +1,4 @@
+import 'package:com.jyhong.stock_game/common/widgets/common_app_bar.dart';
 import 'package:com.jyhong.stock_game/pages/home_page/home_controller.dart';
 import 'package:com.jyhong.stock_game/services/api_service.dart';
 import 'package:flutter/material.dart';
@@ -89,29 +90,49 @@ class _ShopPageState extends State<ShopPage> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  @override
+Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('shop'.tr), centerTitle: true),
+      appBar: CommonAppBar(title: 'shop'.tr),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(20),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             ElevatedButton.icon(
               onPressed: _watchAdReward,
-              icon: const Icon(Icons.ondemand_video),
-              label: Text('watch_ad_reward'.tr),
+              icon: const Icon(Icons.ondemand_video, size: 28),
+              label: Text(
+                'watch_ad_reward'.tr,
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
               style: ElevatedButton.styleFrom(
-                minimumSize: const Size.fromHeight(50),
+                minimumSize: const Size.fromHeight(60),
+                foregroundColor: Colors.black,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
               ),
             ),
-            const SizedBox(height: 16),
+            ),
+            const SizedBox(height: 24),
             // 출석 보상 버튼은 일단 주석 처리된 상태
             // ElevatedButton.icon(
             //   onPressed: _claimDailyReward,
-            //   icon: const Icon(Icons.calendar_today),
-            //   label: Text('daily_reward'.tr),
+            //   icon: const Icon(Icons.calendar_today, size: 26),
+            //   label: Text(
+            //     'daily_reward'.tr,
+            //     style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            //   ),
             //   style: ElevatedButton.styleFrom(
-            //     minimumSize: const Size.fromHeight(50),
+            //     minimumSize: const Size.fromHeight(60),
+            //     backgroundColor: Colors.lightBlue.shade300,
+            //     foregroundColor: Colors.white,
+            //     shape: RoundedRectangleBorder(
+            //       borderRadius: BorderRadius.circular(12),
+            //     ),
             //   ),
             // ),
           ],
@@ -119,4 +140,5 @@ class _ShopPageState extends State<ShopPage> {
       ),
     );
   }
+
 }
