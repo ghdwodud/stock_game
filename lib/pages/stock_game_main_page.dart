@@ -1,7 +1,7 @@
 import 'package:com.jyhong.stock_game/pages/home_page/home_page.dart';
 import 'package:com.jyhong.stock_game/pages/market_page/all_stocks/all_stocks_page.dart';
 import 'package:com.jyhong.stock_game/pages/shop_page/shop_page.dart';
-import 'package:com.jyhong.stock_game/pages/settings_page/settings_page.dart';
+import 'package:com.jyhong.stock_game/pages/chat_page/chat_page.dart'; // ✅ ChatPage import 추가
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -17,7 +17,7 @@ class _StockGameMainPageState extends State<StockGameMainPage> {
     HomePage(), // 홈
     AllStocksPage(), // 시장
     ShopPage(), // 상점
-    SettingsPage(), // 설정
+    ChatPage(), // ✅ 채팅으로 변경
   ];
 
   void _onItemTapped(int index) {
@@ -34,14 +34,14 @@ class _StockGameMainPageState extends State<StockGameMainPage> {
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
         type: BottomNavigationBarType.fixed,
-        selectedItemColor: Colors.blueAccent, // 선택된 탭 강조 색
+        selectedItemColor: Colors.blueAccent,
         unselectedItemColor: Colors.grey,
         selectedLabelStyle: const TextStyle(
           fontSize: 13,
           fontWeight: FontWeight.bold,
         ),
         unselectedLabelStyle: const TextStyle(fontSize: 12),
-        iconSize: 28, // 모든 아이콘 기본 크기
+        iconSize: 28,
         items: [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'home'.tr),
           BottomNavigationBarItem(
@@ -50,12 +50,11 @@ class _StockGameMainPageState extends State<StockGameMainPage> {
           ),
           BottomNavigationBarItem(icon: Icon(Icons.store), label: 'shop'.tr),
           BottomNavigationBarItem(
-            icon: Icon(Icons.settings),
-            label: 'settings'.tr,
+            icon: Icon(Icons.chat_bubble_outline), // ✅ 채팅 아이콘
+            label: 'chat'.tr, // ✅ 번역 키 변경
           ),
         ],
       ),
-
     );
   }
 }
