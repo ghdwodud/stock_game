@@ -12,7 +12,6 @@ import 'firebase_options.dart';
 import 'pages/onboarding/onboarding_page.dart';
 import 'pages/stock_game_main_page.dart';
 
-
 final logger = Logger();
 
 void main() async {
@@ -37,7 +36,7 @@ class MyApp extends StatelessWidget {
       title: 'Stock Game',
       debugShowCheckedModeBanner: false,
       translations: Get.find<TranslationService>(),
-      locale: TranslationService.locale, // ✅ 추가
+      locale: const Locale('ko', 'KR'),
       fallbackLocale: TranslationService.fallbackLocale, // ✅ 추가
       supportedLocales: const [Locale('en', 'US'), Locale('ko', 'KR')],
       localizationsDelegates: const [
@@ -100,5 +99,3 @@ final ThemeData darkTheme = ThemeData(
     ),
   ),
 );
-
-
