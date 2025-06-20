@@ -1,7 +1,7 @@
+import 'package:com.jyhong.stock_game/pages/friend_page/friend_page.dart';
 import 'package:com.jyhong.stock_game/pages/home_page/home_page.dart';
 import 'package:com.jyhong.stock_game/pages/market_page/all_stocks/all_stocks_page.dart';
-import 'package:com.jyhong.stock_game/pages/shop_page/shop_page.dart';
-import 'package:com.jyhong.stock_game/pages/chat_page/chat_page.dart'; // ✅ ChatPage import 추가
+import 'package:com.jyhong.stock_game/pages/chat_page/chat_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -16,8 +16,8 @@ class _StockGameMainPageState extends State<StockGameMainPage> {
   final List<Widget> _pages = [
     HomePage(), // 홈
     AllStocksPage(), // 시장
-    ShopPage(), // 상점
-    ChatPage(), // ✅ 채팅으로 변경
+    FriendsPage(), // 상점
+    ChatPage(), // 채팅
   ];
 
   void _onItemTapped(int index) {
