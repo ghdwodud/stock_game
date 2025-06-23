@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'package:com.jyhong.stock_game/pages/home_page/home_controller.dart';
+import 'package:com.jyhong.stock_game/pages/home/home_controller.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:com.jyhong.stock_game/services/api_service.dart';
@@ -75,7 +75,7 @@ class StockTradeController extends GetxController {
     }
   }
 
-void onSell() async {
+  void onSell() async {
     final qty = int.tryParse(qtyController.text);
     if (qty == null || qty <= 0) {
       _showError('유효한 수량을 입력하세요');
@@ -103,7 +103,7 @@ void onSell() async {
     }
   }
 
-/// ✅ 성공 시 스낵바
+  /// ✅ 성공 시 스낵바
   void _showSuccess(String message, {Color color = Colors.black}) {
     Get.rawSnackbar(
       message: message,
@@ -137,8 +137,6 @@ void onSell() async {
       isSnackbarActive.value = false;
     });
   }
-
-
 
   Future<void> refreshHoldingInfo() async {
     final holdings =

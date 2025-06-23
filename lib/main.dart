@@ -1,5 +1,6 @@
 import 'package:com.jyhong.stock_game/110n/translation.dart';
-import 'package:com.jyhong.stock_game/pages/settings_page/settings_page.dart';
+import 'package:com.jyhong.stock_game/pages/register/register_page.dart';
+import 'package:com.jyhong.stock_game/pages/settings/settings_page.dart';
 import 'package:com.jyhong.stock_game/services/auth_service.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -10,7 +11,7 @@ import 'package:logger/logger.dart';
 
 import 'firebase_options.dart';
 import 'pages/onboarding/onboarding_page.dart';
-import 'pages/stock_game_main_page.dart';
+import 'pages/main_page.dart';
 
 final logger = Logger();
 
@@ -53,6 +54,7 @@ class MyApp extends StatelessWidget {
         GetPage(name: '/onboarding', page: () => OnboardingPage()),
         GetPage(name: '/main', page: () => StockGameMainPage()),
         GetPage(name: '/settings', page: () => SettingsPage()),
+        GetPage(name: '/register', page: () => RegisterPage()), // 이거 필수
       ],
     );
   }

@@ -1,5 +1,5 @@
 import 'package:com.jyhong.stock_game/common/widgets/common_app_bar.dart';
-import 'package:com.jyhong.stock_game/pages/home_page/home_controller.dart';
+import 'package:com.jyhong.stock_game/pages/home/home_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

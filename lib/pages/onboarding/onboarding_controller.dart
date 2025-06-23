@@ -5,9 +5,14 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 class OnboardingController extends GetxController {
-  final FirebaseAuth _auth = FirebaseAuth.instance;
   final ApiService _api = ApiService();
-  final AuthService _authService = Get.find<AuthService>(); // ✅ 추가
+  final AuthService _authService = Get.find<AuthService>();
+
+  final RxBool isLoading = false.obs;
+
+  // 폼 입력값 (아이디/비밀번호)
+  final RxString email = ''.obs;
+  final RxString password = ''.obs;
 
   Future<void> loginWithGoogle() async {
     try {
@@ -48,8 +53,7 @@ class OnboardingController extends GetxController {
         throw Exception('서버 응답이 올바르지 않습니다.');
       }
 
-      // ✅ refreshToken까지 저장
-      _authService.setAuth(
+      await _authService.setAuth(
         userUuid: user['uuid'],
         nickname: user['name'],
         token: jwt,
@@ -63,12 +67,14 @@ class OnboardingController extends GetxController {
     }
   }
 
-
-
-  Future<void> loginAsGuest() async {
+  Future<void> loginWithEmailPassword() async {
     try {
-      final response = await _api.post('/auth/guest-login', {});
-      print('✅ 서버 응답: $response');
+      isLoading.value = true;
+
+      final response = await _api.post('/auth/login', {
+        'email': email.value,
+        'password': password.value,
+      });
 
       final jwt = response['token'];
       final refreshToken = response['refreshToken'];
@@ -87,10 +93,14 @@ class OnboardingController extends GetxController {
 
       Get.offAllNamed('/main');
     } catch (e) {
-      print('❌ 게스트 로그인 실패: $e');
-      Get.snackbar("게스트 로그인 실패", e.toString());
+      print('❌ 이메일 로그인 실패: $e');
+      Get.snackbar("로그인 실패", e.toString());
+    } finally {
+      isLoading.value = false;
     }
   }
 
-
+  Future<void> goToRegisterPage() async {
+    Get.toNamed('/register');
+  }
 }
