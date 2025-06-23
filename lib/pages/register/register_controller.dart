@@ -1,3 +1,4 @@
+import 'package:com.jyhong.stock_game/services/api_service.dart';
 import 'package:get/get.dart';
 
 class RegisterController extends GetxController {
@@ -16,10 +17,17 @@ class RegisterController extends GetxController {
     isLoading.value = true;
 
     try {
-      // TODO: 회원가입 API 연동
-      await Future.delayed(Duration(seconds: 2)); // mock delay
+      print(
+        '📌 RegisterController => name: ${name.value}, email: ${email.value}, password: ${password.value}',
+      );
+
+      await ApiService().post('/auth/register', {
+        'name': name.value,
+        'email': email.value,
+        'password': password.value,
+      });
       Get.snackbar('회원가입 성공', '이제 로그인하세요');
-      Get.back(); // 이전 화면으로
+      Get.offAllNamed('/onboarding');
     } catch (e) {
       Get.snackbar('회원가입 실패', e.toString());
     } finally {

@@ -58,7 +58,6 @@ class ApiService {
           throw Exception('Unauthorized');
         }
       }
-
       return _processResponse(res);
     } on TimeoutException {
       print('⏰ 요청 타임아웃');
@@ -68,7 +67,6 @@ class ApiService {
       rethrow;
     }
   }
-
 
   Future<bool> _refreshToken() async {
     final authService = Get.find<AuthService>();
@@ -112,7 +110,6 @@ class ApiService {
       return false;
     }
   }
-
 
   dynamic _processResponse(http.Response res) {
     if (res.statusCode >= 200 && res.statusCode < 300) {
