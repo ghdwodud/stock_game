@@ -64,7 +64,7 @@ class StockTradeController extends GetxController {
       await Get.find<HomeController>().fetchPortfolio(showLoading: false);
       await refreshHoldingInfo();
 
-      //_showSuccess('${stock.name} $qty주를 매수했습니다');
+      _showSuccess('${stock.name} $qty주를 매수했습니다');
 
       print('🟢 매수 응답: $response');
     } catch (e) {

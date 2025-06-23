@@ -6,6 +6,32 @@ import 'stock_trade_controller.dart';
 class StockTradePage extends StatelessWidget {
   final controller = Get.put(StockTradeController());
 
+  @override
+  Widget build(BuildContext context) {
+    final stock = controller.stock;
+
+    return Scaffold(
+      resizeToAvoidBottomInset: true,
+      appBar: AppBar(title: Text('${stock.name} ${'trade'.tr}')),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: ListView(
+          keyboardDismissBehavior:
+              ScrollViewKeyboardDismissBehavior.onDrag, // ✅ 키보드 자연스럽게 닫히게
+          children: [
+            _buildPriceInfo(stock),
+            const SizedBox(height: 16),
+            _buildHoldingsInfo(),
+            const SizedBox(height: 8),
+            _buildQuantityInput(),
+            const SizedBox(height: 16),
+            _buildActionButtons(),
+          ],
+        ),
+      ),
+    );
+  }
+
   Widget _buildPriceChart(List<double> history) {
     return SizedBox(
       height: 200,
@@ -32,32 +58,6 @@ class StockTradePage extends StatelessWidget {
     );
   }
 
-  @override
-Widget build(BuildContext context) {
-    final stock = controller.stock;
-
-    return Scaffold(
-      resizeToAvoidBottomInset: true,
-      appBar: AppBar(title: Text('${stock.name} ${'trade'.tr}')),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: ListView(
-          keyboardDismissBehavior:
-              ScrollViewKeyboardDismissBehavior.onDrag, // ✅ 키보드 자연스럽게 닫히게
-          children: [
-            _buildPriceInfo(stock),
-            const SizedBox(height: 16),
-            _buildHoldingsInfo(),
-            const SizedBox(height: 8),
-            _buildQuantityInput(),
-            const SizedBox(height: 16),
-            _buildActionButtons(),
-          ],
-        ),
-      ),
-    );
-  }
-
   Widget _buildPriceInfo(stock) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -77,7 +77,7 @@ Widget build(BuildContext context) {
     );
   }
 
-Widget _buildHoldingsInfo() {
+  Widget _buildHoldingsInfo() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -97,7 +97,6 @@ Widget _buildHoldingsInfo() {
       ],
     );
   }
-
 
   Widget _buildQuantityInput() {
     return Row(
@@ -161,7 +160,6 @@ Widget _buildHoldingsInfo() {
       ],
     );
   }
-
 
   Widget _buildActionButtons() {
     return Row(

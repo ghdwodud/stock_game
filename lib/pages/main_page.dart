@@ -48,7 +48,10 @@ class _StockGameMainPageState extends State<StockGameMainPage> {
             icon: Icon(Icons.show_chart),
             label: 'market'.tr,
           ),
-          BottomNavigationBarItem(icon: Icon(Icons.store), label: 'shop'.tr),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person_add), // 친구 추가 아이콘
+            label: 'friend'.tr,
+          ),
           BottomNavigationBarItem(
             icon: Icon(Icons.chat_bubble_outline), // ✅ 채팅 아이콘
             label: 'chat'.tr, // ✅ 번역 키 변경

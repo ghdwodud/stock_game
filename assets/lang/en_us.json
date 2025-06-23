@@ -62,5 +62,7 @@
     "max_sell": "Max Sell",
     "buy": "Buy",
     "sell": "Sell",
-    "buy_price": "Buy Price"
+    "buy_price": "Buy Price",
+    "friend":"friend",
+    "chat":"chat"
   }

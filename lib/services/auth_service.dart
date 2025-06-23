@@ -1,3 +1,5 @@
+import 'dart:math' as console;
+
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -57,5 +59,9 @@ class AuthService extends GetxService {
     _nickname.value = '';
     _jwt.value = '';
     _refreshToken.value = '';
+  }
+
+  Future<void> logout() async {
+    await clearAuth();
   }
 }

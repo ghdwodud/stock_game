@@ -1,4 +1,5 @@
 import 'package:com.jyhong.stock_game/common/widgets/common_app_bar.dart';
+import 'package:com.jyhong.stock_game/services/auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -51,7 +52,7 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   @override
-Widget build(BuildContext context) {
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: CommonAppBar(title: 'settings'.tr),
       body: ListView(
@@ -115,9 +116,38 @@ Widget build(BuildContext context) {
           //   title: Text('reset'.tr, style: TextStyle(fontSize: 16)),
           //   onTap: _resetData,
           // ),
+          const SizedBox(height: 24),
+          const Divider(thickness: 1),
+          const SizedBox(height: 16),
+
+          ListTile(
+            leading: const Icon(Icons.logout, color: Colors.red),
+            title: Text(
+              'logout'.tr,
+              style: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+                color: Colors.red,
+              ),
+            ),
+            onTap: () async {
+              final confirm = await Get.defaultDialog<bool>(
+                title: 'logout'.tr,
+                middleText: 'logout_confirm'.tr,
+                textCancel: 'cancel'.tr,
+                textConfirm: 'ok'.tr,
+                onConfirm: () => Get.back(result: true),
+                onCancel: () => Get.back(result: false),
+              );
+
+              if (confirm == true) {
+                await Get.find<AuthService>().logout();
+                Get.offAllNamed('/onboarding');
+              }
+            },
+          ),
         ],
       ),
     );
   }
-
 }

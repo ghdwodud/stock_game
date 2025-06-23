@@ -62,6 +62,8 @@
     "max_sell": "최대 매도 수량",
     "buy": "매수",
     "sell": "매도",
-    "buy_price": "매수가"
+    "buy_price": "매수가",
+    "friend":"친구",
+    "chat":"채팅"
   }
   
