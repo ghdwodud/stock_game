@@ -70,30 +70,42 @@ class OnboardingController extends GetxController {
   Future<void> loginWithEmailPassword() async {
     try {
       isLoading.value = true;
+      print(
+        '🔐 로그인 요청: email=${email.value}, password=${'*' * password.value.length}',
+      );
 
       final response = await _api.post('/auth/login', {
         'email': email.value,
         'password': password.value,
       });
 
+      print('📥 서버 응답: $response');
+
       final jwt = response['token'];
       final refreshToken = response['refreshToken'];
       final user = response['user'];
+
+      if (jwt == null) print('❗ JWT가 null입니다.');
+      if (refreshToken == null) print('❗ RefreshToken이 null입니다.');
+      if (user == null) print('❗ User가 null입니다.');
 
       if (jwt == null || refreshToken == null || user == null) {
         throw Exception('서버 응답이 올바르지 않습니다.');
       }
 
+      print('✅ 로그인 성공: userUuid=${user['uuid']}, nickname=${user['nickname']}');
+
       await _authService.setAuth(
         userUuid: user['uuid'],
-        nickname: user['name'],
+        nickname: user['nickname'], // ← nickname으로 수정
         token: jwt,
         refreshToken: refreshToken,
       );
 
       Get.offAllNamed('/main');
-    } catch (e) {
+    } catch (e, stackTrace) {
       print('❌ 이메일 로그인 실패: $e');
+      print('📛 StackTrace: $stackTrace');
       Get.snackbar("로그인 실패", e.toString());
     } finally {
       isLoading.value = false;

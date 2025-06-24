@@ -13,7 +13,6 @@ class TranslationService extends Translations {
     final enJson = await rootBundle.loadString('assets/lang/en_us.json');
     final koJson = await rootBundle.loadString('assets/lang/ko_kr.json');
 
-    // ✅ 키를 'en_US', 'ko_KR'로 해야 한다 (대문자)
     translations['en_US'] = Map<String, String>.from(json.decode(enJson));
     translations['ko_KR'] = Map<String, String>.from(json.decode(koJson));
   }

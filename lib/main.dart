@@ -1,7 +1,9 @@
 import 'package:com.jyhong.stock_game/110n/translation.dart';
 import 'package:com.jyhong.stock_game/pages/register/register_page.dart';
 import 'package:com.jyhong.stock_game/pages/settings/settings_page.dart';
+import 'package:com.jyhong.stock_game/services/api_service.dart';
 import 'package:com.jyhong.stock_game/services/auth_service.dart';
+import 'package:com.jyhong.stock_game/services/friend_service.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -21,9 +23,12 @@ void main() async {
   await MobileAds.instance.initialize(); // ✅ 광고 초기화
   await TranslationService.loadTranslations(); // ✅ JSON 번역 파일 읽기
 
-  Get.put(TranslationService()); // ✅ 여기 추가!
+  Get.put(ApiService());
+  Get.put(TranslationService());
 
   final authService = await Get.putAsync(() => AuthService().init());
+  await Get.putAsync(() async => FriendService());
+
   runApp(MyApp(authService));
 }
 
