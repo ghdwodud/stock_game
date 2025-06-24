@@ -12,10 +12,14 @@ class ApiService {
 
   final Duration timeoutDuration = const Duration(seconds: 5);
 
-  Future<dynamic> get(String endpoint) async {
-    return _sendRequest(
-      () => http.get(Uri.parse('$baseUrl$endpoint'), headers: _buildHeaders()),
-    );
+  Future<dynamic> get(
+    String endpoint, {
+    Map<String, String>? queryParams,
+  }) async {
+    final uri = Uri.parse(
+      '$baseUrl$endpoint',
+    ).replace(queryParameters: queryParams);
+    return _sendRequest(() => http.get(uri, headers: _buildHeaders()));
   }
 
   Future<dynamic> post(String endpoint, Map<String, dynamic> body) async {
