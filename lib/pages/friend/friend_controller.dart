@@ -4,11 +4,13 @@ import '../../services/friend_service.dart'; // 경로는 실제 위치에 맞�
 class FriendsController extends GetxController {
   final FriendService _friendService = Get.find<FriendService>();
 
-  final friends = <String>[].obs;
+  final friends = <Map<String, dynamic>>[].obs;
   final isLoading = false.obs;
 
   final searchResults = <Map<String, dynamic>>[].obs;
   final isSearching = false.obs;
+
+  final receivedRequests = <Map<String, dynamic>>[].obs;
 
   @override
   void onInit() {
@@ -16,12 +18,17 @@ class FriendsController extends GetxController {
     fetchFriends();
   }
 
+  @override
+  void onReady() {
+    super.onReady();
+    fetchReceivedRequests();
+  }
+
   Future<void> fetchFriends() async {
     isLoading.value = true;
     try {
       final data = await _friendService.getFriends();
-      final friendNames = data.map((f) => f['nickname'] as String).toList();
-      friends.assignAll(friendNames);
+      friends.assignAll(data);
     } catch (e) {
       Get.snackbar('Error', '친구 목록을 불러오는 데 실패했습니다.');
     } finally {
@@ -81,6 +88,31 @@ class FriendsController extends GetxController {
       Get.snackbar('Error', '유저 검색 실패: $e');
     } finally {
       isSearching.value = false;
+    }
+  }
+
+  Future<void> fetchReceivedRequests() async {
+    try {
+      final data = await _friendService.getReceivedFriendRequests();
+      print('📥 받은 요청 개수: ${data.length}');
+      for (var item in data) {
+        print('👤 요청자: ${item['nickname']} (${item['uuid']})');
+      }
+      receivedRequests.assignAll(data);
+    } catch (e, st) {
+      print('❌ 친구 요청 불러오기 실패: $e');
+      print('📍 Stacktrace: $st');
+      Get.snackbar('Error', '친구 요청 목록을 불러오는 데 실패했습니다.');
+    }
+  }
+
+  Future<void> removeFriend(String uuid, String nickname) async {
+    try {
+      await _friendService.deleteFriend(uuid);
+      Get.snackbar('삭제됨', '$nickname 님을 친구 목록에서 제거했습니다.');
+      await fetchFriends(); // 최신화
+    } catch (e) {
+      Get.snackbar('Error', '친구 삭제 실패: $e');
     }
   }
 }

@@ -177,4 +177,11 @@ class ApiService {
       throw Exception('이미지 업로드 실패 (${response.statusCode})');
     }
   }
+
+  Future<dynamic> delete(String endpoint) async {
+    return _sendRequest(
+      () =>
+          http.delete(Uri.parse('$baseUrl$endpoint'), headers: _buildHeaders()),
+    );
+  }
 }

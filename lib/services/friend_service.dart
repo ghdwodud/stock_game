@@ -4,9 +4,9 @@ import '../services/api_service.dart';
 class FriendService extends GetxService {
   final ApiService _api = Get.find<ApiService>();
 
-  Future<List<dynamic>> getFriends() async {
+  Future<List<Map<String, dynamic>>> getFriends() async {
     final res = await _api.get('/friends');
-    return res as List<dynamic>;
+    return List<Map<String, dynamic>>.from(res);
   }
 
   Future<List<dynamic>> getIncomingRequests() async {
@@ -24,6 +24,7 @@ class FriendService extends GetxService {
   }
 
   Future<void> acceptFriendRequest(String requestId) async {
+    print('acceptFriendRequest requestId:${requestId}');
     await _api.post('/friends/request/$requestId/accept', {});
   }
 
@@ -34,5 +35,35 @@ class FriendService extends GetxService {
   Future<List<Map<String, dynamic>>> searchUsers(String query) async {
     final res = await _api.get('/search', queryParams: {'q': query});
     return List<Map<String, dynamic>>.from(res);
+  }
+
+  Future<List<Map<String, dynamic>>> getReceivedFriendRequests() async {
+    final data = await _api.get('/friends/requests/incoming');
+
+    print('📦 받은 데이터: $data');
+
+    try {
+      final parsed =
+          (data as List)
+              .map(
+                (item) => {
+                  'requestId': item['id'],
+                  'uuid': item['sender']['uuid'],
+                  'nickname': item['sender']['nickname'],
+                  'avatarUrl': item['sender']['avatarUrl'],
+                },
+              )
+              .toList();
+
+      return parsed;
+    } catch (e, st) {
+      print('❌ 파싱 실패: $e');
+      print('📍 StackTrace: $st');
+      rethrow;
+    }
+  }
+
+  Future<void> deleteFriend(String uuid) async {
+    await _api.delete('/friends/$uuid');
   }
 }
