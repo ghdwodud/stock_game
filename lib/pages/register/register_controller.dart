@@ -17,21 +17,21 @@ class RegisterController extends GetxController {
     isLoading.value = true;
 
     try {
-      print(
-        '📌 RegisterController => name: ${name.value}, email: ${email.value}, password: ${password.value}',
-      );
-
-      await ApiService().post('/auth/register', {
-        'name': name.value,
+      final body = {
+        'nickname': name.value,
         'email': email.value,
         'password': password.value,
-      });
+      };
+      print('📦 회원가입 요청: $body');
+
+      final res = await ApiService().post('/auth/register', body);
+      print('✅ 응답: $res');
+
       Get.snackbar('회원가입 성공', '이제 로그인하세요');
       Get.offAllNamed('/onboarding');
     } catch (e) {
+      print('❌ 회원가입 실패: $e');
       Get.snackbar('회원가입 실패', e.toString());
-    } finally {
-      isLoading.value = false;
     }
   }
 }
