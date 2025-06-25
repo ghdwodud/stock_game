@@ -93,10 +93,4 @@ class HomeController extends GetxController {
       duration: const Duration(seconds: 2),
     );
   }
-
-  String? get fullAvatarUrl {
-    if (avatarUrl.value.isEmpty) return null;
-    String fullAvatarUrl = '${_apiService.baseUrl}${avatarUrl.value}';
-    return fullAvatarUrl;
-  }
 }

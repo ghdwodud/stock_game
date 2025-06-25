@@ -1,3 +1,4 @@
+import 'package:com.jyhong.stock_game/widgets/user_avatar.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:com.jyhong.stock_game/pages/friend/friend_controller.dart';
@@ -49,16 +50,7 @@ class _FriendSearchSheetState extends State<FriendSearchSheet> {
                     final avatarUrl = user['avatarUrl'];
 
                     return ListTile(
-                      leading: CircleAvatar(
-                        backgroundImage:
-                            avatarUrl != null && avatarUrl.isNotEmpty
-                                ? NetworkImage(avatarUrl)
-                                : null,
-                        child:
-                            (avatarUrl == null || avatarUrl.isEmpty)
-                                ? const Icon(Icons.person)
-                                : null,
-                      ),
+                      leading: UserAvatar(avatarUrl: avatarUrl, radius: 20),
                       title: Text(user['nickname'] ?? '닉네임 없음'),
                       trailing: TextButton(
                         child: const Text('추가'),

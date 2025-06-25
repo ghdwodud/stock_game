@@ -1,5 +1,6 @@
 import 'package:com.jyhong.stock_game/common/widgets/common_app_bar.dart';
 import 'package:com.jyhong.stock_game/pages/home/home_controller.dart';
+import 'package:com.jyhong.stock_game/widgets/user_avatar.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -65,16 +66,11 @@ class HomePage extends StatelessWidget {
                 alignment: Alignment.center,
                 children: [
                   Obx(
-                    () => CircleAvatar(
+                    () => UserAvatar(
+                      avatarUrl: controller.avatarUrl.value,
                       radius: 30,
-                      backgroundImage:
-                          controller.fullAvatarUrl != null
-                              ? NetworkImage(controller.fullAvatarUrl!)
-                              : null,
-                      child:
-                          controller.avatarUrl.value.isEmpty
-                              ? const Icon(Icons.person)
-                              : null,
+                      onTap: controller.pickAndUploadImage,
+                      showEditIcon: true,
                     ),
                   ),
                   Positioned(

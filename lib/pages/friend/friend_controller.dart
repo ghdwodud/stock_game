@@ -72,7 +72,7 @@ class FriendsController extends GetxController {
     isSearching.value = true;
     try {
       final results = await _friendService.searchUsers(keyword);
-      searchResults.assignAll(results); // [{ uuid: ..., nickname: ... }, ...]
+      searchResults.assignAll(results);
       print('🔍 검색 결과 (${results.length}개):');
       for (var user in results) {
         print('  - ${user['nickname']} (${user['uuid']})');
