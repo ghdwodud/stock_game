@@ -59,7 +59,7 @@ class MyApp extends StatelessWidget {
         GetPage(name: '/onboarding', page: () => OnboardingPage()),
         GetPage(name: '/main', page: () => StockGameMainPage()),
         GetPage(name: '/settings', page: () => SettingsPage()),
-        GetPage(name: '/register', page: () => RegisterPage()), // 이거 필수
+        GetPage(name: '/register', page: () => RegisterPage()),
       ],
     );
   }

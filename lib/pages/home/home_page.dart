@@ -59,7 +59,43 @@ class HomePage extends StatelessWidget {
         padding: const EdgeInsets.all(20),
         child: Row(
           children: [
-            const CircleAvatar(child: Icon(Icons.person)),
+            GestureDetector(
+              onTap: controller.pickAndUploadImage,
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  Obx(
+                    () => CircleAvatar(
+                      radius: 30,
+                      backgroundImage:
+                          controller.fullAvatarUrl != null
+                              ? NetworkImage(controller.fullAvatarUrl!)
+                              : null,
+                      child:
+                          controller.avatarUrl.value.isEmpty
+                              ? const Icon(Icons.person)
+                              : null,
+                    ),
+                  ),
+                  Positioned(
+                    bottom: 0,
+                    right: 0,
+                    child: Container(
+                      padding: const EdgeInsets.all(4),
+                      decoration: BoxDecoration(
+                        color: Colors.black54,
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Icon(
+                        Icons.edit,
+                        size: 16,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
             const SizedBox(width: 16),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,

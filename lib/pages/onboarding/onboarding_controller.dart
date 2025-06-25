@@ -93,13 +93,14 @@ class OnboardingController extends GetxController {
         throw Exception('서버 응답이 올바르지 않습니다.');
       }
 
-      print('✅ 로그인 성공: userUuid=${user['uuid']}, nickname=${user['nickname']}');
+      print('✅ 로그인 성공: user:${user.toString()}');
 
       await _authService.setAuth(
         userUuid: user['uuid'],
         nickname: user['nickname'], // ← nickname으로 수정
         token: jwt,
         refreshToken: refreshToken,
+        avatarUrl: user['avatarUrl'],
       );
 
       Get.offAllNamed('/main');

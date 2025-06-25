@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:async';
@@ -121,6 +123,58 @@ class ApiService {
     } else {
       print('❌ API Error: ${res.statusCode} - ${res.body}');
       throw Exception('API Error: ${res.statusCode}');
+    }
+  }
+
+  Future<String> uploadAvatar(File file) async {
+    final authService = Get.find<AuthService>();
+    print('📤 업로드 시작');
+    print('📦 파일 경로: ${file.path}');
+    print('🔐 JWT 토큰: ${authService.jwt}');
+
+    final request = http.MultipartRequest(
+      'POST',
+      Uri.parse('$baseUrl/users/avatar'),
+    );
+
+    request.headers['Authorization'] = 'Bearer ${authService.jwt}';
+
+    try {
+      final multipartFile = await http.MultipartFile.fromPath(
+        'avatar',
+        file.path,
+      );
+      request.files.add(multipartFile);
+      print('✅ 파일 첨부 완료: ${multipartFile.filename}');
+    } catch (e) {
+      print('❌ 파일 첨부 중 오류: $e');
+      rethrow;
+    }
+
+    http.StreamedResponse response;
+    try {
+      response = await request.send();
+      print('📡 서버 응답 상태 코드: ${response.statusCode}');
+    } catch (e) {
+      print('❌ 요청 전송 중 오류: $e');
+      rethrow;
+    }
+
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      final responseData = await response.stream.bytesToString();
+      print('✅ 서버 응답 본문: $responseData');
+
+      final json = jsonDecode(responseData);
+      final uploadedUrl = json['avatarUrl'];
+
+      // ✅ 업로드 성공 후 avatarUrl 저장
+      await authService.updateAvatarUrl(uploadedUrl);
+
+      return uploadedUrl;
+    } else {
+      final errorBody = await response.stream.bytesToString();
+      print('❌ 업로드 실패: ${response.statusCode}, 응답: $errorBody');
+      throw Exception('이미지 업로드 실패 (${response.statusCode})');
     }
   }
 }

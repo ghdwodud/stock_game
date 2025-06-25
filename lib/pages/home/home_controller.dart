@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
 
 import 'package:com.jyhong.stock_game/models/stock_model.dart';
 import 'package:com.jyhong.stock_game/models/user_profile_model.dart';
@@ -6,8 +8,8 @@ import 'package:com.jyhong.stock_game/services/api_service.dart';
 import 'package:com.jyhong.stock_game/services/auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:get/get_navigation/src/snackbar/snackbar.dart';
+import 'package:http/http.dart' as http;
+import 'package:image_picker/image_picker.dart';
 
 class HomeController extends GetxController {
   final ApiService _apiService = ApiService();
@@ -15,28 +17,31 @@ class HomeController extends GetxController {
 
   Rx<UserPortfolioModel?> userPortfolio = Rx<UserPortfolioModel?>(null);
   RxBool isLoading = false.obs;
+  RxString avatarUrl = ''.obs;
 
-  Timer? _refreshTimer; // 🔥 타이머 추가
+  Timer? _refreshTimer;
 
   @override
   void onInit() {
     super.onInit();
-    fetchPortfolio(); // 초기 로딩은 로딩 띄움
+    fetchPortfolio();
+    avatarUrl.value = _authService.avatarUrl ?? '';
 
+    print('onInit avatarUrl:${avatarUrl.value}');
     _refreshTimer = Timer.periodic(const Duration(seconds: 10), (_) {
-      fetchPortfolio(showLoading: false); // 주기 갱신은 로딩 없이
+      fetchPortfolio(showLoading: false);
     });
   }
 
   @override
   void onClose() {
-    _refreshTimer?.cancel(); // 🔥 컨트롤러 dispose 시 타이머 정리
+    _refreshTimer?.cancel();
     super.onClose();
   }
 
   Future<void> fetchPortfolio({bool showLoading = true}) async {
     if (showLoading) {
-    isLoading.value = true;
+      isLoading.value = true;
     }
 
     try {
@@ -53,7 +58,31 @@ class HomeController extends GetxController {
     }
   }
 
-/// ✅ 에러 스낵바 통일
+  Future<StockModel> getStockInfo(int stockId) async {
+    final data = await _apiService.get('/stocks/$stockId');
+    return StockModel.fromJson(data);
+  }
+
+  Future<void> pickAndUploadImage() async {
+    try {
+      final picker = ImagePicker();
+      final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+
+      if (pickedFile == null) return;
+
+      final file = File(pickedFile.path);
+      final uploadedUrl = await _apiService.uploadAvatar(file);
+
+      avatarUrl.value = uploadedUrl;
+      _authService.avatarUrl = uploadedUrl;
+
+      Get.snackbar('완료', '프로필 이미지가 변경되었습니다.');
+    } catch (e) {
+      print('❌ 이미지 업로드 실패: $e');
+      _showErrorSnackbar('이미지 업로드 중 오류 발생');
+    }
+  }
+
   void _showErrorSnackbar(String message) {
     Get.rawSnackbar(
       message: message,
@@ -65,9 +94,9 @@ class HomeController extends GetxController {
     );
   }
 
-Future<StockModel> getStockInfo(int stockId) async {
-    final data = await _apiService.get('/stocks/$stockId');
-    return StockModel.fromJson(data);
+  String? get fullAvatarUrl {
+    if (avatarUrl.value.isEmpty) return null;
+    String fullAvatarUrl = '${_apiService.baseUrl}${avatarUrl.value}';
+    return fullAvatarUrl;
   }
-
 }
