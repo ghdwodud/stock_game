@@ -79,10 +79,6 @@ class _ShopPageState extends State<ShopPage> {
     }
   }
 
-  void _claimDailyReward() {
-    Get.snackbar('daily_reward'.tr, 'daily_reward_success'.tr);
-  }
-
   @override
   void dispose() {
     _rewardedAd?.dispose();

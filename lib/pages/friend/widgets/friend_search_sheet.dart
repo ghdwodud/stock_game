@@ -46,12 +46,27 @@ class _FriendSearchSheetState extends State<FriendSearchSheet> {
                   itemCount: results.length,
                   itemBuilder: (_, index) {
                     final user = results[index];
+                    final avatarUrl = user['avatarUrl'];
+
                     return ListTile(
+                      leading: CircleAvatar(
+                        backgroundImage:
+                            avatarUrl != null && avatarUrl.isNotEmpty
+                                ? NetworkImage(avatarUrl)
+                                : null,
+                        child:
+                            (avatarUrl == null || avatarUrl.isEmpty)
+                                ? const Icon(Icons.person)
+                                : null,
+                      ),
                       title: Text(user['nickname'] ?? '닉네임 없음'),
-                      onTap: () {
-                        controller.sendFriendRequest(user['uuid']);
-                        Navigator.pop(context);
-                      },
+                      trailing: TextButton(
+                        child: const Text('추가'),
+                        onPressed: () {
+                          controller.sendFriendRequest(user['uuid']);
+                          Navigator.pop(context);
+                        },
+                      ),
                     );
                   },
                 ),
