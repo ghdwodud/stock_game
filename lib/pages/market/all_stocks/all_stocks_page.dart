@@ -34,12 +34,15 @@ class AllStocksPage extends StatelessWidget {
         }
 
         return ListView.builder(
-          padding: const EdgeInsets.symmetric(vertical: 8),
+          padding: const EdgeInsets.symmetric(
+            horizontal: 20,
+            vertical: 24,
+          ), // ✅ 일치시킴
           itemCount: controller.allStocks.length,
           itemBuilder: (context, index) {
             final stock = controller.allStocks[index];
             return Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              padding: const EdgeInsets.only(bottom: 12), // ✅ 아래 여백만
               child: Card(
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
@@ -89,7 +92,6 @@ class AllStocksPage extends StatelessWidget {
             );
           },
         );
-
       }),
     );
   }
