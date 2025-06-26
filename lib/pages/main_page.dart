@@ -1,7 +1,7 @@
+import 'package:com.jyhong.stock_game/pages/chat/chat_room/chatroom_page.dart';
 import 'package:com.jyhong.stock_game/pages/friend/friend_page.dart';
 import 'package:com.jyhong.stock_game/pages/home/home_page.dart';
 import 'package:com.jyhong.stock_game/pages/market/all_stocks/all_stocks_page.dart';
-import 'package:com.jyhong.stock_game/pages/chat/chat_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -29,7 +29,7 @@ class _StockGameMainPageState extends State<StockGameMainPage> {
       case 2:
         return FriendsPage();
       case 3:
-        return ChatPage();
+        return ChatRoomPage();
       default:
         return Center(child: Text('페이지를 찾을 수 없습니다.'));
     }
