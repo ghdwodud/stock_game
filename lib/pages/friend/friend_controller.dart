@@ -39,6 +39,7 @@ class FriendsController extends GetxController {
   Future<void> sendFriendRequest(String uuid) async {
     try {
       await _friendService.sendFriendRequest(uuid);
+      await fetchReceivedRequests();
       Get.snackbar('요청 완료', '친구 요청을 보냈습니다.');
     } catch (e) {
       Get.snackbar('Error', '친구 요청 실패: $e');
@@ -55,7 +56,8 @@ class FriendsController extends GetxController {
     try {
       await _friendService.acceptFriendRequest(requestId);
       Get.snackbar('수락됨', '친구 요청을 수락했습니다.');
-      await fetchFriends();
+      await fetchFriends(); // 친구 목록 갱신
+      await fetchReceivedRequests(); // 🔄 친구 요청 목록 갱신 ← 이게 빠졌었음
     } catch (e) {
       Get.snackbar('Error', '요청 수락 실패: $e');
     }
@@ -65,6 +67,7 @@ class FriendsController extends GetxController {
     try {
       await _friendService.rejectFriendRequest(requestId);
       Get.snackbar('거절됨', '친구 요청을 거절했습니다.');
+      await fetchReceivedRequests(); // 🔄 요청 리스트도 갱신 필요
     } catch (e) {
       Get.snackbar('Error', '요청 거절 실패: $e');
     }

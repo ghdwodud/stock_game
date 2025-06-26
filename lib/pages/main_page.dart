@@ -13,23 +13,32 @@ class StockGameMainPage extends StatefulWidget {
 class _StockGameMainPageState extends State<StockGameMainPage> {
   int _selectedIndex = 0;
 
-  final List<Widget> _pages = [
-    HomePage(), // 홈
-    AllStocksPage(), // 시장
-    FriendsPage(), // 상점
-    ChatPage(), // 채팅
-  ];
-
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
     });
   }
 
+  // ✅ 페이지를 매번 새로 생성
+  Widget _buildPage(int index) {
+    switch (index) {
+      case 0:
+        return HomePage();
+      case 1:
+        return AllStocksPage();
+      case 2:
+        return FriendsPage();
+      case 3:
+        return ChatPage();
+      default:
+        return Center(child: Text('페이지를 찾을 수 없습니다.'));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _pages[_selectedIndex],
+      body: _buildPage(_selectedIndex),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
@@ -49,12 +58,12 @@ class _StockGameMainPageState extends State<StockGameMainPage> {
             label: 'market'.tr,
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.person_add), // 친구 추가 아이콘
+            icon: Icon(Icons.person_add),
             label: 'friend'.tr,
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.chat_bubble_outline), // ✅ 채팅 아이콘
-            label: 'chat'.tr, // ✅ 번역 키 변경
+            icon: Icon(Icons.chat_bubble_outline),
+            label: 'chat'.tr,
           ),
         ],
       ),
