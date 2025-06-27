@@ -4,14 +4,10 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:async';
 import 'package:get/get.dart';
-import 'auth_service.dart'; // 실제 경로로 바꿔줘야 함
+import 'auth_service.dart';
+import 'package:com.jyhong.stock_game/config/config.dart';
 
 class ApiService {
-  final String baseUrl = const String.fromEnvironment(
-    'BASE_URL',
-    defaultValue: 'http://localhost:3000',
-  );
-
   final Duration timeoutDuration = const Duration(seconds: 5);
 
   Future<dynamic> get(

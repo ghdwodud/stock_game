@@ -1,6 +1,5 @@
+import 'package:com.jyhong.stock_game/config/config.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import '../services/api_service.dart'; // 경로는 프로젝트 구조에 맞게 조정
 
 class UserAvatar extends StatelessWidget {
   final String? avatarUrl;
@@ -18,14 +17,10 @@ class UserAvatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final apiService = Get.find<ApiService>();
-
     String? fullUrl;
     if (avatarUrl != null && avatarUrl!.isNotEmpty) {
       fullUrl =
-          avatarUrl!.startsWith('http')
-              ? avatarUrl
-              : '${apiService.baseUrl}$avatarUrl';
+          avatarUrl!.startsWith('http') ? avatarUrl : '${baseUrl}$avatarUrl';
     }
 
     final avatarWidget = CircleAvatar(

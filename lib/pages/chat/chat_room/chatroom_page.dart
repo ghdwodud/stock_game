@@ -20,8 +20,11 @@ class ChatRoomPage extends StatelessWidget {
             return InkWell(
               onTap: () {
                 Get.to(
-                  () =>
-                      ChatPage(uuid: room['uuid'], nickname: room['nickname']),
+                  () => ChatPage(
+                    uuid: room['uuid'],
+                    nickname: room['nickname'],
+                    myUuid: '',
+                  ),
                 );
               },
               child: Padding(

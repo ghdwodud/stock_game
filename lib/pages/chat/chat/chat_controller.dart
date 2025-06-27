@@ -1,50 +1,57 @@
+import 'package:com.jyhong.stock_game/services/chat_service.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class ChatController extends GetxController {
-  final RxList<Map<String, dynamic>> messages = <Map<String, dynamic>>[].obs;
+  final messages = <Map<String, dynamic>>[].obs;
   final inputController = TextEditingController();
 
   late String chatPartnerUuid;
   late String chatPartnerNickname;
+  late String myUuid;
+  final ChatService _chatService = ChatService();
 
-  // ChatPage 진입 시 초기화
-  void initChat(String uuid, String nickname) {
-    chatPartnerUuid = uuid;
-    chatPartnerNickname = nickname;
+  void initChat(String partnerUuid, String partnerNickname, String myId) {
+    chatPartnerUuid = partnerUuid;
+    chatPartnerNickname = partnerNickname;
+    myUuid = myId;
 
-    // TODO: 서버에서 이전 메시지 불러오기 로직 추가 예정
-    // 예시로 더미 메시지 하나 추가
-    if (messages.isEmpty) {
+    _chatService.connect(myUuid);
+    _chatService.onReceiveMessage((data) {
+      final isMine = data['senderId'] == myUuid;
+
       messages.add({
-        'text': '$nickname 님과의 대화를 시작합니다.',
-        'isMine': false,
+        'text': data['text'],
+        'isMine': isMine,
         'timestamp': DateTime.now(),
       });
-    }
+    });
+
+    messages.add({
+      'text': '$chatPartnerNickname 님과의 대화를 시작합니다.',
+      'isMine': false,
+      'timestamp': DateTime.now(),
+    });
   }
 
   void sendMessage() {
     final text = inputController.text.trim();
     if (text.isEmpty) return;
 
-    messages.add({'text': text, 'isMine': true, 'timestamp': DateTime.now()});
+    final msg = {
+      'senderId': myUuid,
+      'receiverId': chatPartnerUuid,
+      'text': text,
+    };
 
-    inputController.clear();
-
-    // 응답 시뮬레이션 (테스트용)
-    Future.delayed(const Duration(milliseconds: 400), () {
-      messages.add({
-        'text': '$chatPartnerNickname의 응답: $text',
-        'isMine': false,
-        'timestamp': DateTime.now(),
-      });
-    });
+    _chatService.sendMessage(msg); // emit만 하고
+    inputController.clear(); // 로컬 상태는 건드리지 않음 ❗
   }
 
   @override
   void onClose() {
     inputController.dispose();
+    _chatService.disconnect();
     super.onClose();
   }
 }
