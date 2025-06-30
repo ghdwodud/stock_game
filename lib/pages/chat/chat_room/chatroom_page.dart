@@ -1,3 +1,5 @@
+import 'package:com.jyhong.stock_game/enum/friend_select_mode.dart';
+import 'package:com.jyhong.stock_game/pages/widgets/friend_select_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../chat/chat_page.dart';
@@ -23,7 +25,7 @@ class ChatRoomPage extends StatelessWidget {
                   () => ChatPage(
                     uuid: room['uuid'],
                     nickname: room['nickname'],
-                    myUuid: '',
+                    myUuid: controller.myUuid,
                   ),
                 );
               },
@@ -52,7 +54,7 @@ class ChatRoomPage extends StatelessWidget {
                                 ),
                               ),
                               Text(
-                                '오전 10:30', // TODO: room['lastTime']으로 대체 가능
+                                '오전 10:30',
                                 style: TextStyle(
                                   fontSize: 12,
                                   color: Colors.grey.shade600,
@@ -76,6 +78,22 @@ class ChatRoomPage extends StatelessWidget {
             );
           },
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () async {
+          final selectedUuid = await showModalBottomSheet<String>(
+            context: context,
+            isScrollControlled: true,
+            builder: (_) => FriendSelectSheet(mode: FriendSelectMode.myFriends),
+          );
+
+          if (selectedUuid != null) {
+            print('✅ 선택된 친구 uuid: $selectedUuid');
+            // TODO: 채팅방 생성 로직 실행
+          }
+        },
+        child: const Icon(Icons.chat),
+        tooltip: '채팅방 만들기',
       ),
     );
   }

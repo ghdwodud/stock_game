@@ -1,3 +1,4 @@
+import 'package:com.jyhong.stock_game/main.dart';
 import 'package:get/get.dart';
 import '../services/api_service.dart';
 
@@ -39,9 +40,7 @@ class FriendService extends GetxService {
 
   Future<List<Map<String, dynamic>>> getReceivedFriendRequests() async {
     final data = await _api.get('/friends/requests/incoming');
-
-    print('📦 받은 데이터: $data');
-
+    logger.i('📦 받은 데이터: $data');
     try {
       final parsed =
           (data as List)
@@ -57,8 +56,7 @@ class FriendService extends GetxService {
 
       return parsed;
     } catch (e, st) {
-      print('❌ 파싱 실패: $e');
-      print('📍 StackTrace: $st');
+      logger.e('❌ 파싱 실패', error: e, stackTrace: st);
       rethrow;
     }
   }

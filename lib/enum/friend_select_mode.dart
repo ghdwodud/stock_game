@@ -1,0 +1,1 @@
+enum FriendSelectMode { allUsers, myFriends }

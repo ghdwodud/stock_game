@@ -44,8 +44,8 @@ class ChatController extends GetxController {
       'text': text,
     };
 
-    _chatService.sendMessage(msg); // emit만 하고
-    inputController.clear(); // 로컬 상태는 건드리지 않음 ❗
+    _chatService.sendMessage(msg);
+    inputController.clear();
   }
 
   @override

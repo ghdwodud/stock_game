@@ -1,6 +1,7 @@
 import 'package:com.jyhong.stock_game/common/widgets/common_app_bar.dart';
 import 'package:com.jyhong.stock_game/pages/friend/friend_controller.dart';
-import 'package:com.jyhong.stock_game/pages/friend/widgets/friend_search_sheet.dart';
+import 'package:com.jyhong.stock_game/pages/widgets/friend_select_sheet.dart';
+import 'package:com.jyhong.stock_game/enum/friend_select_mode.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -14,10 +15,7 @@ class FriendsPage extends StatelessWidget {
     return Scaffold(
       appBar: CommonAppBar(title: 'friends'.tr),
       body: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 20,
-          vertical: 24,
-        ), // ✅ 통일
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
         child: Obx(() {
           if (controller.isLoading.value) {
             return const Center(child: CircularProgressIndicator());
@@ -26,6 +24,7 @@ class FriendsPage extends StatelessWidget {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // 상단 제목 + 추가 버튼
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -39,7 +38,10 @@ class FriendsPage extends StatelessWidget {
                       showModalBottomSheet(
                         context: context,
                         isScrollControlled: true,
-                        builder: (_) => FriendSearchSheet(),
+                        builder:
+                            (_) => FriendSelectSheet(
+                              mode: FriendSelectMode.allUsers,
+                            ),
                       );
                     },
                   ),
@@ -47,15 +49,16 @@ class FriendsPage extends StatelessWidget {
               ),
               const Divider(thickness: 1, height: 20),
 
+              // 받은 친구 요청
               if (controller.receivedRequests.isNotEmpty) ...[
                 const Text(
                   '받은 친구 요청',
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                 ),
-                const SizedBox(height: 12), // ✅ 더 자연스러운 여백
+                const SizedBox(height: 12),
                 ...controller.receivedRequests.map(
                   (user) => Padding(
-                    padding: const EdgeInsets.only(bottom: 12), // ✅ 카드 간 여백
+                    padding: const EdgeInsets.only(bottom: 12),
                     child: Card(
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
@@ -102,20 +105,21 @@ class FriendsPage extends StatelessWidget {
                 const Divider(thickness: 1, height: 20),
               ],
 
+              // 친구 목록
               const Text(
                 '친구 목록',
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
-              const SizedBox(height: 12), // ✅ 더 자연스러운 여백
-              // 친구 목록 리스트
+              const SizedBox(height: 12),
+
               Expanded(
                 child: ListView.builder(
-                  padding: const EdgeInsets.only(top: 8), // ✅ 리스트 여백 추가
+                  padding: const EdgeInsets.only(top: 8),
                   itemCount: controller.friends.length,
                   itemBuilder: (context, index) {
                     final friend = controller.friends[index];
                     return Padding(
-                      padding: const EdgeInsets.only(bottom: 12), // ✅ 카드 간 간격
+                      padding: const EdgeInsets.only(bottom: 12),
                       child: Card(
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
