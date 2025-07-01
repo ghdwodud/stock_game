@@ -50,4 +50,8 @@ class ChatService {
     final res = await _api.get('/chatroom?userUuid=$uuid');
     return List<Map<String, dynamic>>.from(res);
   }
+
+  Future<void> deleteRoom(String roomId) async {
+    await ApiService().delete('/chatroom/$roomId');
+  }
 }

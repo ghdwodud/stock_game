@@ -36,4 +36,15 @@ class ChatRoomController extends GetxController {
       return null;
     }
   }
+
+  Future<void> deleteChatRoom(String roomId) async {
+    try {
+      await _chatService.deleteRoom(roomId); // 서버 삭제 요청
+      chatRooms.removeWhere((room) => room['id'] == roomId); // 로컬 목록에서 제거
+      Get.snackbar('삭제 완료', '채팅방이 삭제되었습니다.');
+    } catch (e) {
+      logger.e('❌ 채팅방 삭제 실패', error: e);
+      Get.snackbar('오류', '채팅방 삭제 실패: $e');
+    }
+  }
 }

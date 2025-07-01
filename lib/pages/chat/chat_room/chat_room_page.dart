@@ -1,11 +1,11 @@
 import 'package:com.jyhong.stock_game/enum/friend_select_mode.dart';
-import 'package:com.jyhong.stock_game/pages/chat/chatroom/chatroom_tile.dart';
+import 'package:com.jyhong.stock_game/pages/chat/chat_room/chat_room_tile.dart';
 import 'package:com.jyhong.stock_game/pages/widgets/friend_select_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../chat/chat_page.dart';
-import 'chatroom_controller.dart';
+import 'chat_room_controller.dart';
 
 class ChatRoomPage extends StatelessWidget {
   final controller = Get.put(ChatRoomController());
@@ -21,7 +21,14 @@ class ChatRoomPage extends StatelessWidget {
           itemCount: controller.chatRooms.length,
           itemBuilder: (context, index) {
             final room = controller.chatRooms[index];
-            return ChatRoomTile(room: room, myUuid: controller.myUuid);
+            return ChatRoomTile(
+              room: controller.chatRooms[index],
+              myUuid: controller.myUuid,
+              onDelete:
+                  () => controller.deleteChatRoom(
+                    controller.chatRooms[index]['id'],
+                  ),
+            );
           },
         );
       }),
