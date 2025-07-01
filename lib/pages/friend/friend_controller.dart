@@ -98,7 +98,6 @@ class FriendsController extends GetxController {
 
   Future<void> fetchReceivedRequests() async {
     try {
-      logger.d('fetchReceivedRequests');
       final data = await _friendService.getReceivedFriendRequests();
       print('📥 받은 요청 개수: ${data.length}');
       for (var item in data) {

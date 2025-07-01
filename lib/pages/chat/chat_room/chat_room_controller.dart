@@ -19,6 +19,7 @@ class ChatRoomController extends GetxController {
   Future<void> fetchChatRooms() async {
     try {
       final rooms = await _chatService.fetchMyChatRooms();
+      logger.d('📥 가져온 채팅방 목록 (${rooms.length}개): $rooms');
       chatRooms.value = rooms;
     } catch (e) {
       logger.e('🚨 채팅방 목록 불러오기 실패', error: e);

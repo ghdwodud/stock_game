@@ -7,10 +7,21 @@ import 'package:get/get.dart';
 import '../chat/chat_page.dart';
 import 'chat_room_controller.dart';
 
-class ChatRoomPage extends StatelessWidget {
+class ChatRoomPage extends StatefulWidget {
+  const ChatRoomPage({super.key});
+
+  @override
+  State<ChatRoomPage> createState() => _ChatRoomPageState();
+}
+
+class _ChatRoomPageState extends State<ChatRoomPage> {
   final controller = Get.put(ChatRoomController());
 
-  ChatRoomPage({super.key});
+  @override
+  void initState() {
+    super.initState();
+    controller.fetchChatRooms(); // 페이지 진입 시 목록 갱신
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -22,12 +33,9 @@ class ChatRoomPage extends StatelessWidget {
           itemBuilder: (context, index) {
             final room = controller.chatRooms[index];
             return ChatRoomTile(
-              room: controller.chatRooms[index],
+              room: room,
               myUuid: controller.myUuid,
-              onDelete:
-                  () => controller.deleteChatRoom(
-                    controller.chatRooms[index]['id'],
-                  ),
+              onDelete: () => controller.deleteChatRoom(room['id']),
             );
           },
         );
