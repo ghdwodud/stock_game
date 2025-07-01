@@ -1,4 +1,4 @@
-import 'package:com.jyhong.stock_game/pages/chat/chat_room/chatroom_page.dart';
+import 'package:com.jyhong.stock_game/pages/chat/chatroom/chatroom_page.dart';
 import 'package:com.jyhong.stock_game/pages/friend/friend_page.dart';
 import 'package:com.jyhong.stock_game/pages/home/home_page.dart';
 import 'package:com.jyhong.stock_game/pages/market/all_stocks/all_stocks_page.dart';
@@ -19,7 +19,6 @@ class _StockGameMainPageState extends State<StockGameMainPage> {
     });
   }
 
-  // ✅ 페이지를 매번 새로 생성
   Widget _buildPage(int index) {
     switch (index) {
       case 0:

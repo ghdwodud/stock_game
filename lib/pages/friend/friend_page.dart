@@ -1,13 +1,15 @@
 import 'package:com.jyhong.stock_game/common/widgets/common_app_bar.dart';
-import 'package:com.jyhong.stock_game/pages/friend/friend_controller.dart';
-import 'package:com.jyhong.stock_game/pages/widgets/friend_select_sheet.dart';
 import 'package:com.jyhong.stock_game/enum/friend_select_mode.dart';
+import 'package:com.jyhong.stock_game/pages/friend/friend_controller.dart'
+    show FriendsController;
+import 'package:com.jyhong.stock_game/pages/friend/widgets/friend_card.dart';
+import 'package:com.jyhong.stock_game/pages/friend/widgets/friend_section.dart';
+import 'package:com.jyhong.stock_game/pages/widgets/friend_select_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class FriendsPage extends StatelessWidget {
   FriendsPage({super.key});
-
   final FriendsController controller = Get.put(FriendsController());
 
   @override
@@ -49,72 +51,24 @@ class FriendsPage extends StatelessWidget {
               ),
               const Divider(thickness: 1, height: 20),
 
-              // 받은 친구 요청
-              if (controller.receivedRequests.isNotEmpty) ...[
-                const Text(
-                  '받은 친구 요청',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 12),
-                ...controller.receivedRequests.map(
-                  (user) => Padding(
-                    padding: const EdgeInsets.only(bottom: 12),
-                    child: Card(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
+              // 받은 요청
+              FriendSection(
+                title: '받은 친구 요청',
+                users: controller.receivedRequests,
+                actionBuilder:
+                    (user) => [
+                      IconButton(
+                        icon: const Icon(Icons.check, color: Colors.green),
+                        onPressed:
+                            () => controller.acceptRequest(user['requestId']),
                       ),
-                      child: ListTile(
-                        contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 8,
-                        ),
-                        leading: CircleAvatar(
-                          radius: 20,
-                          backgroundImage:
-                              user['avatarUrl'] != null &&
-                                      user['avatarUrl'].toString().isNotEmpty
-                                  ? NetworkImage(user['avatarUrl'])
-                                  : null,
-                          child:
-                              (user['avatarUrl'] == null ||
-                                      user['avatarUrl'].toString().isEmpty)
-                                  ? Text(
-                                    user['nickname'].toString().isNotEmpty
-                                        ? user['nickname'][0]
-                                        : '?',
-                                  )
-                                  : null,
-                        ),
-
-                        title: Text(user['nickname']),
-                        trailing: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            IconButton(
-                              icon: const Icon(
-                                Icons.check,
-                                color: Colors.green,
-                              ),
-                              onPressed:
-                                  () => controller.acceptRequest(
-                                    user['requestId'],
-                                  ),
-                            ),
-                            IconButton(
-                              icon: const Icon(Icons.close, color: Colors.red),
-                              onPressed:
-                                  () => controller.rejectRequest(
-                                    user['requestId'],
-                                  ),
-                            ),
-                          ],
-                        ),
+                      IconButton(
+                        icon: const Icon(Icons.close, color: Colors.red),
+                        onPressed:
+                            () => controller.rejectRequest(user['requestId']),
                       ),
-                    ),
-                  ),
-                ),
-                const Divider(thickness: 1, height: 20),
-              ],
+                    ],
+              ),
 
               // 친구 목록
               const Text(
@@ -122,7 +76,6 @@ class FriendsPage extends StatelessWidget {
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 12),
-
               Expanded(
                 child: ListView.builder(
                   padding: const EdgeInsets.only(top: 8),
@@ -131,73 +84,39 @@ class FriendsPage extends StatelessWidget {
                     final friend = controller.friends[index];
                     return Padding(
                       padding: const EdgeInsets.only(bottom: 12),
-                      child: Card(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        elevation: 2,
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 12,
-                            vertical: 8,
+                      child: FriendCard(
+                        user: friend,
+                        actions: [
+                          IconButton(
+                            icon: const Icon(
+                              Icons.chat_bubble_outline,
+                              color: Colors.blue,
+                            ),
+                            onPressed:
+                                () =>
+                                    print('💬 ${friend['nickname']}에게 메시지 보내기'),
                           ),
-                          child: Row(
-                            children: [
-                              CircleAvatar(
-                                radius: 20,
-                                backgroundImage:
-                                    friend['avatarUrl'] != null
-                                        ? NetworkImage(friend['avatarUrl'])
-                                        : null,
-                                child:
-                                    friend['avatarUrl'] == null
-                                        ? Text((friend['nickname'] ?? '?')[0])
-                                        : null,
-                              ),
-
-                              const SizedBox(width: 12),
-                              Expanded(
-                                child: Text(
-                                  friend['nickname'],
-                                  style: const TextStyle(fontSize: 16),
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ),
-                              IconButton(
-                                icon: const Icon(
-                                  Icons.chat_bubble_outline,
-                                  color: Colors.blue,
-                                ),
-                                onPressed: () {
-                                  print('💬 ${friend['nickname']}에게 메시지 보내기');
-                                },
-                              ),
-                              IconButton(
-                                icon: const Icon(
-                                  Icons.delete,
-                                  color: Colors.red,
-                                ),
-                                onPressed: () {
-                                  Get.defaultDialog(
-                                    title: "친구 삭제",
-                                    middleText:
-                                        "${friend['nickname']}님을 친구 목록에서 삭제하시겠습니까?",
-                                    textCancel: "취소",
-                                    textConfirm: "삭제",
-                                    confirmTextColor: Colors.white,
-                                    onConfirm: () {
-                                      controller.removeFriend(
-                                        friend['uuid'],
-                                        friend['nickname'],
-                                      );
-                                      Get.back();
-                                    },
+                          IconButton(
+                            icon: const Icon(Icons.delete, color: Colors.red),
+                            onPressed: () {
+                              Get.defaultDialog(
+                                title: "친구 삭제",
+                                middleText:
+                                    "${friend['nickname']}님을 친구 목록에서 삭제하시겠습니까?",
+                                textCancel: "취소",
+                                textConfirm: "삭제",
+                                confirmTextColor: Colors.white,
+                                onConfirm: () {
+                                  controller.removeFriend(
+                                    friend['uuid'],
+                                    friend['nickname'],
                                   );
+                                  Get.back();
                                 },
-                              ),
-                            ],
+                              );
+                            },
                           ),
-                        ),
+                        ],
                       ),
                     );
                   },
