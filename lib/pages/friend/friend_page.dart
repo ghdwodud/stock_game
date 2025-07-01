@@ -1,16 +1,28 @@
 import 'package:com.jyhong.stock_game/common/widgets/common_app_bar.dart';
 import 'package:com.jyhong.stock_game/enum/friend_select_mode.dart';
-import 'package:com.jyhong.stock_game/pages/friend/friend_controller.dart'
-    show FriendsController;
+import 'package:com.jyhong.stock_game/pages/friend/friend_controller.dart';
 import 'package:com.jyhong.stock_game/pages/friend/widgets/friend_card.dart';
 import 'package:com.jyhong.stock_game/pages/friend/widgets/friend_section.dart';
 import 'package:com.jyhong.stock_game/pages/widgets/friend_select_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class FriendsPage extends StatelessWidget {
-  FriendsPage({super.key});
+class FriendsPage extends StatefulWidget {
+  const FriendsPage({super.key});
+
+  @override
+  State<FriendsPage> createState() => _FriendsPageState();
+}
+
+class _FriendsPageState extends State<FriendsPage> {
   final FriendsController controller = Get.put(FriendsController());
+
+  @override
+  void initState() {
+    super.initState();
+    controller.fetchFriends();
+    controller.fetchReceivedRequests();
+  }
 
   @override
   Widget build(BuildContext context) {

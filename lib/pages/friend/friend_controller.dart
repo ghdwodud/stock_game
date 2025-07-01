@@ -1,3 +1,4 @@
+import 'package:com.jyhong.stock_game/main.dart';
 import 'package:get/get.dart';
 import '../../services/friend_service.dart'; // 경로는 실제 위치에 맞게 수정
 
@@ -15,13 +16,14 @@ class FriendsController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    fetchFriends();
   }
 
   @override
   void onReady() {
+    logger.d('onReady');
     super.onReady();
     fetchReceivedRequests();
+    fetchFriends();
   }
 
   Future<void> fetchFriends() async {
@@ -96,6 +98,7 @@ class FriendsController extends GetxController {
 
   Future<void> fetchReceivedRequests() async {
     try {
+      logger.d('fetchReceivedRequests');
       final data = await _friendService.getReceivedFriendRequests();
       print('📥 받은 요청 개수: ${data.length}');
       for (var item in data) {
