@@ -10,11 +10,18 @@ class ChatController extends GetxController {
   late String chatPartnerNickname;
   late String myUuid;
   final ChatService _chatService = ChatService();
+  late String roomId;
 
-  void initChat(String partnerUuid, String partnerNickname, String myId) {
+  void initChat(
+    String partnerUuid,
+    String partnerNickname,
+    String myId,
+    String chatRoomId,
+  ) {
     chatPartnerUuid = partnerUuid;
     chatPartnerNickname = partnerNickname;
     myUuid = myId;
+    roomId = chatRoomId;
 
     _chatService.connect(myUuid);
     _chatService.onReceiveMessage((data) {
@@ -38,11 +45,7 @@ class ChatController extends GetxController {
     final text = inputController.text.trim();
     if (text.isEmpty) return;
 
-    final msg = {
-      'senderId': myUuid,
-      'receiverId': chatPartnerUuid,
-      'text': text,
-    };
+    final msg = {'senderId': myUuid, 'roomId': roomId, 'text': text};
 
     _chatService.sendMessage(msg);
     inputController.clear();

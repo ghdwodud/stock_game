@@ -6,14 +6,18 @@ class ChatPage extends StatelessWidget {
   final String uuid;
   final String nickname;
   final String myUuid;
-
+  final String roomId;
   ChatPage({
     super.key,
     required this.uuid,
     required this.nickname,
     required this.myUuid,
+    required this.roomId,
   }) {
-    Get.put(ChatController(), tag: uuid).initChat(uuid, nickname, myUuid);
+    Get.put(
+      ChatController(),
+      tag: uuid,
+    ).initChat(uuid, nickname, myUuid, roomId);
   }
 
   @override

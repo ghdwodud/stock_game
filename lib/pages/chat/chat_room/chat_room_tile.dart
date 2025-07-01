@@ -68,6 +68,7 @@ class ChatRoomTile extends StatelessWidget {
               uuid: other['uuid'],
               nickname: nickname,
               myUuid: myUuid,
+              roomId: room['id'], // ← 이거 추가
             ),
           );
         },

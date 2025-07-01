@@ -61,6 +61,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                   uuid: other['uuid'],
                   nickname: other['nickname'],
                   myUuid: myUuid,
+                  roomId: newRoom['id'],
                 ),
               );
             }
