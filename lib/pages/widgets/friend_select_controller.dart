@@ -36,7 +36,7 @@ class FriendSelectController extends GetxController {
       final res = await _friendService.getFriends();
       friends.assignAll(res);
       filteredMyFriends.assignAll(res);
-      logger.i('👥 내 친구 ${res.length}명 로드됨');
+      logger.i('👥 내 친구 목록: ${res}');
     } catch (e, st) {
       logger.e('❌ 친구 목록 로딩 실패', error: e, stackTrace: st);
     } finally {
@@ -66,7 +66,7 @@ class FriendSelectController extends GetxController {
           return nickname.contains(keyword.toLowerCase());
         }).toList();
     filteredMyFriends.assignAll(filtered);
-    logger.i('🔍 친구 목록 내 검색 결과 ${filtered.length}건');
+    logger.i('🔍 친구 목록 내 검색 결과 ${filtered}');
   }
 
   /// 친구 요청 보내기

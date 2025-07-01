@@ -19,13 +19,23 @@ class ChatRoomPage extends StatelessWidget {
           itemCount: controller.chatRooms.length,
           itemBuilder: (context, index) {
             final room = controller.chatRooms[index];
+            final myUuid = controller.myUuid;
+
+            final other = (room['members'] as List)
+                .map((e) => e['user'])
+                .firstWhere((user) => user['uuid'] != myUuid);
+
+            final nickname = other['nickname'] ?? '닉네임 없음';
+            final avatarUrl = other['avatarUrl'];
+            final lastMessage = room['lastMessage'] ?? '';
+
             return InkWell(
               onTap: () {
                 Get.to(
                   () => ChatPage(
-                    uuid: room['uuid'],
-                    nickname: room['nickname'],
-                    myUuid: controller.myUuid,
+                    uuid: other['uuid'],
+                    nickname: nickname,
+                    myUuid: myUuid,
                   ),
                 );
               },
@@ -37,7 +47,15 @@ class ChatRoomPage extends StatelessWidget {
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    CircleAvatar(radius: 24, child: Text(room['nickname'][0])),
+                    CircleAvatar(
+                      radius: 24,
+                      backgroundImage:
+                          avatarUrl != null ? NetworkImage(avatarUrl) : null,
+                      child:
+                          avatarUrl == null
+                              ? Text(nickname.isNotEmpty ? nickname[0] : '?')
+                              : null,
+                    ),
                     const SizedBox(width: 12),
                     Expanded(
                       child: Column(
@@ -47,14 +65,14 @@ class ChatRoomPage extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                room['nickname'],
+                                nickname,
                                 style: const TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 16,
                                 ),
                               ),
                               Text(
-                                '오전 10:30',
+                                '오전 10:30', // TODO: updatedAt으로 변경 가능
                                 style: TextStyle(
                                   fontSize: 12,
                                   color: Colors.grey.shade600,
@@ -64,7 +82,7 @@ class ChatRoomPage extends StatelessWidget {
                           ),
                           const SizedBox(height: 4),
                           Text(
-                            room['lastMessage'] ?? '',
+                            lastMessage,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(color: Colors.grey.shade700),
@@ -88,8 +106,21 @@ class ChatRoomPage extends StatelessWidget {
           );
 
           if (selectedUuid != null) {
-            print('✅ 선택된 친구 uuid: $selectedUuid');
-            // TODO: 채팅방 생성 로직 실행
+            final newRoom = await controller.createChatRoom(selectedUuid);
+            if (newRoom != null) {
+              final myUuid = controller.myUuid;
+              final other = (newRoom['members'] as List)
+                  .map((e) => e['user'])
+                  .firstWhere((user) => user['uuid'] != myUuid);
+
+              Get.to(
+                () => ChatPage(
+                  uuid: other['uuid'],
+                  nickname: other['nickname'],
+                  myUuid: myUuid,
+                ),
+              );
+            }
           }
         },
         child: const Icon(Icons.chat),

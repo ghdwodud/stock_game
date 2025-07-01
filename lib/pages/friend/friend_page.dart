@@ -69,12 +69,23 @@ class FriendsPage extends StatelessWidget {
                           vertical: 8,
                         ),
                         leading: CircleAvatar(
-                          child: Text(
-                            user['nickname'].toString().isNotEmpty
-                                ? user['nickname'][0]
-                                : '?',
-                          ),
+                          radius: 20,
+                          backgroundImage:
+                              user['avatarUrl'] != null &&
+                                      user['avatarUrl'].toString().isNotEmpty
+                                  ? NetworkImage(user['avatarUrl'])
+                                  : null,
+                          child:
+                              (user['avatarUrl'] == null ||
+                                      user['avatarUrl'].toString().isEmpty)
+                                  ? Text(
+                                    user['nickname'].toString().isNotEmpty
+                                        ? user['nickname'][0]
+                                        : '?',
+                                  )
+                                  : null,
                         ),
+
                         title: Text(user['nickname']),
                         trailing: Row(
                           mainAxisSize: MainAxisSize.min,
@@ -134,8 +145,16 @@ class FriendsPage extends StatelessWidget {
                             children: [
                               CircleAvatar(
                                 radius: 20,
-                                child: Text((friend['nickname'] ?? '?')[0]),
+                                backgroundImage:
+                                    friend['avatarUrl'] != null
+                                        ? NetworkImage(friend['avatarUrl'])
+                                        : null,
+                                child:
+                                    friend['avatarUrl'] == null
+                                        ? Text((friend['nickname'] ?? '?')[0])
+                                        : null,
                               ),
+
                               const SizedBox(width: 12),
                               Expanded(
                                 child: Text(

@@ -80,7 +80,18 @@ class FriendSelectSheet extends StatelessWidget {
                                 },
                                 child: const Text('추가'),
                               )
-                              : null,
+                              : IconButton(
+                                icon: const Icon(
+                                  Icons.chat_bubble_outline,
+                                  color: Colors.blue,
+                                ),
+                                onPressed: () {
+                                  Navigator.pop(
+                                    context,
+                                    uuid,
+                                  ); // 채팅방 만들기용 UUID 반환
+                                },
+                              ),
                       onTap: () => Navigator.pop(context, uuid),
                     );
                   },
