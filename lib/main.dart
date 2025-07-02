@@ -3,7 +3,8 @@ import 'package:com.jyhong.stock_game/pages/register/register_page.dart';
 import 'package:com.jyhong.stock_game/pages/settings/settings_page.dart';
 import 'package:com.jyhong.stock_game/services/api_service.dart';
 import 'package:com.jyhong.stock_game/services/auth_service.dart';
-import 'package:com.jyhong.stock_game/services/chat_service.dart';
+import 'package:com.jyhong.stock_game/services/chat_room_service.dart';
+import 'package:com.jyhong.stock_game/services/chat_socket_service.dart';
 import 'package:com.jyhong.stock_game/services/friend_service.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -30,7 +31,8 @@ void main() async {
   final authService = await Get.putAsync(() => AuthService().init());
   await Get.putAsync(() async => FriendService());
 
-  Get.put(ChatService());
+  Get.put(ChatRoomService());
+  Get.put(ChatSocketService());
 
   runApp(MyApp(authService));
 }

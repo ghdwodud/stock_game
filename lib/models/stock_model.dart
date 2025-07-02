@@ -1,5 +1,3 @@
-import 'package:com.jyhong.stock_game/main.dart';
-
 class StockModel {
   final int id; // ✅ 추가
   final String symbol;

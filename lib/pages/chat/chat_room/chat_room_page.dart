@@ -49,10 +49,17 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
           );
 
           if (selectedUuid != null) {
-            final newRoom = await controller.createChatRoom(selectedUuid);
-            if (newRoom != null) {
-              final myUuid = controller.myUuid;
-              final other = (newRoom['members'] as List)
+            final myUuid = controller.myUuid;
+
+            // 1. 기존 채팅방 있는지 확인
+            final existingRoom = controller.chatRooms.firstWhereOrNull(
+              (room) => (room['members'] as List).any(
+                (e) => e['user']['uuid'] == selectedUuid,
+              ),
+            );
+
+            if (existingRoom != null) {
+              final other = (existingRoom['members'] as List)
                   .map((e) => e['user'])
                   .firstWhere((user) => user['uuid'] != myUuid);
 
@@ -61,9 +68,26 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                   uuid: other['uuid'],
                   nickname: other['nickname'],
                   myUuid: myUuid,
-                  roomId: newRoom['id'],
+                  roomId: existingRoom['id'],
                 ),
               );
+            } else {
+              // 2. 없으면 새로 생성
+              final newRoom = await controller.createChatRoom(selectedUuid);
+              if (newRoom != null) {
+                final other = (newRoom['members'] as List)
+                    .map((e) => e['user'])
+                    .firstWhere((user) => user['uuid'] != myUuid);
+
+                Get.to(
+                  () => ChatPage(
+                    uuid: other['uuid'],
+                    nickname: other['nickname'],
+                    myUuid: myUuid,
+                    roomId: newRoom['id'],
+                  ),
+                );
+              }
             }
           }
         },

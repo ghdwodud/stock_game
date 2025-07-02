@@ -1,4 +1,5 @@
-import 'package:com.jyhong.stock_game/services/chat_service.dart';
+import 'package:com.jyhong.stock_game/services/chat_message_service.dart';
+import 'package:com.jyhong.stock_game/services/chat_socket_service.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -9,24 +10,43 @@ class ChatController extends GetxController {
   late String chatPartnerUuid;
   late String chatPartnerNickname;
   late String myUuid;
-  final ChatService _chatService = ChatService();
   late String roomId;
+
+  final ChatSocketService _chatSocketService = ChatSocketService();
+  final ChatMessageService _chatMessageService = ChatMessageService();
 
   void initChat(
     String partnerUuid,
     String partnerNickname,
     String myId,
-    String chatRoomId,
-  ) {
+    String roomId,
+  ) async {
     chatPartnerUuid = partnerUuid;
     chatPartnerNickname = partnerNickname;
     myUuid = myId;
-    roomId = chatRoomId;
+    this.roomId = roomId;
 
-    _chatService.connect(myUuid);
-    _chatService.onReceiveMessage((data) {
+    _chatSocketService.connect(myUuid);
+
+    // ✅ 기존 메시지 불러오기 (REST API)
+    try {
+      final history = await _chatMessageService.fetchMessages(roomId);
+      messages.assignAll(
+        history.map(
+          (m) => {
+            'text': m['text'],
+            'isMine': m['senderId'] == myUuid,
+            'timestamp': DateTime.parse(m['createdAt']),
+          },
+        ),
+      );
+    } catch (e) {
+      debugPrint('❌ 메시지 불러오기 실패: $e');
+    }
+
+    // ✅ 소켓으로 실시간 메시지 수신
+    _chatSocketService.onReceiveMessage((data) {
       final isMine = data['senderId'] == myUuid;
-
       messages.add({
         'text': data['text'],
         'isMine': isMine,
@@ -34,11 +54,14 @@ class ChatController extends GetxController {
       });
     });
 
-    messages.add({
-      'text': '$chatPartnerNickname 님과의 대화를 시작합니다.',
-      'isMine': false,
-      'timestamp': DateTime.now(),
-    });
+    // 안내 메시지 (최초 대화 시)
+    if (messages.isEmpty) {
+      messages.add({
+        'text': '$chatPartnerNickname 님과의 대화를 시작합니다.',
+        'isMine': false,
+        'timestamp': DateTime.now(),
+      });
+    }
   }
 
   void sendMessage() {
@@ -47,14 +70,14 @@ class ChatController extends GetxController {
 
     final msg = {'senderId': myUuid, 'roomId': roomId, 'text': text};
 
-    _chatService.sendMessage(msg);
+    _chatSocketService.sendMessage(msg);
     inputController.clear();
   }
 
   @override
   void onClose() {
     inputController.dispose();
-    _chatService.disconnect();
+    _chatSocketService.disconnect();
     super.onClose();
   }
 }

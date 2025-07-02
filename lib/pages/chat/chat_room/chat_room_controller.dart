@@ -1,11 +1,11 @@
 import 'package:com.jyhong.stock_game/main.dart';
+import 'package:com.jyhong.stock_game/services/chat_room_service.dart';
 import 'package:get/get.dart';
 import 'package:com.jyhong.stock_game/services/auth_service.dart';
-import 'package:com.jyhong.stock_game/services/chat_service.dart';
 
 class ChatRoomController extends GetxController {
   final chatRooms = <Map<String, dynamic>>[].obs;
-  final ChatService _chatService = Get.find<ChatService>();
+  final ChatRoomService _chatRoomService = Get.find<ChatRoomService>();
   final AuthService _auth = Get.find<AuthService>();
   String get myUuid => _auth.userUuid;
 
@@ -13,12 +13,11 @@ class ChatRoomController extends GetxController {
   void onInit() {
     super.onInit();
     fetchChatRooms();
-    _chatService.connect(myUuid);
   }
 
   Future<void> fetchChatRooms() async {
     try {
-      final rooms = await _chatService.fetchMyChatRooms();
+      final rooms = await _chatRoomService.fetchMyChatRooms();
       logger.d('📥 가져온 채팅방 목록 (${rooms.length}개): $rooms');
       chatRooms.value = rooms;
     } catch (e) {
@@ -28,7 +27,7 @@ class ChatRoomController extends GetxController {
 
   Future<Map<String, dynamic>?> createChatRoom(String friendUuid) async {
     try {
-      final newRoom = await _chatService.createRoomWith(friendUuid);
+      final newRoom = await _chatRoomService.createRoomWith(friendUuid);
       chatRooms.add(newRoom);
       logger.d('🐛 createChatRoom newRoom:$newRoom');
       return newRoom;
@@ -40,7 +39,7 @@ class ChatRoomController extends GetxController {
 
   Future<void> deleteChatRoom(String roomId) async {
     try {
-      await _chatService.deleteRoom(roomId); // 서버 삭제 요청
+      await _chatRoomService.deleteRoom(roomId); // 서버 삭제 요청
       chatRooms.removeWhere((room) => room['id'] == roomId); // 로컬 목록에서 제거
       Get.snackbar('삭제 완료', '채팅방이 삭제되었습니다.');
     } catch (e) {

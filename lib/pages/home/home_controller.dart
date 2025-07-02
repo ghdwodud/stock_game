@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:com.jyhong.stock_game/models/stock_model.dart';
@@ -8,7 +7,6 @@ import 'package:com.jyhong.stock_game/services/api_service.dart';
 import 'package:com.jyhong.stock_game/services/auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 
 class HomeController extends GetxController {
