@@ -28,7 +28,7 @@ class ChatRoomTile extends StatelessWidget {
     return Slidable(
       key: Key(room['id'].toString()),
       endActionPane: ActionPane(
-        motion: const DrawerMotion(), // 스르륵 나오는 애니메이션
+        motion: const DrawerMotion(),
         extentRatio: 0.25,
         children: [
           SlidableAction(
@@ -68,59 +68,65 @@ class ChatRoomTile extends StatelessWidget {
               uuid: other['uuid'],
               nickname: nickname,
               myUuid: myUuid,
-              roomId: room['id'], // ← 이거 추가
+              roomId: room['id'],
             ),
           );
         },
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              CircleAvatar(
-                radius: 24,
-                backgroundImage:
-                    avatarUrl != null ? NetworkImage(avatarUrl) : null,
-                child:
-                    avatarUrl == null
-                        ? Text(nickname.isNotEmpty ? nickname[0] : '?')
-                        : null,
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          nickname,
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16,
-                          ),
-                        ),
-                        Text(
-                          '오전 10:30',
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: Colors.grey.shade600,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      lastMessage,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(color: Colors.grey.shade700),
-                    ),
-                  ],
+        child: Card(
+          elevation: 0,
+          //margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+          margin: EdgeInsets.zero,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(0)),
+          child: Padding(
+            padding: const EdgeInsets.all(12),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                CircleAvatar(
+                  radius: 28,
+                  backgroundImage:
+                      avatarUrl != null ? NetworkImage(avatarUrl) : null,
+                  child:
+                      avatarUrl == null
+                          ? Text(nickname.isNotEmpty ? nickname[0] : '?')
+                          : null,
                 ),
-              ),
-            ],
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            nickname,
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
+                          ),
+                          Text(
+                            '오전 10:30', // TODO: 실제 시간 데이터로 교체
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: Colors.grey.shade600,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        lastMessage,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(color: Colors.grey.shade700),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

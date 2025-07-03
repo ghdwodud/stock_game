@@ -91,8 +91,8 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
             }
           }
         },
-        child: const Icon(Icons.chat),
         tooltip: '채팅방 만들기',
+        child: const Icon(Icons.chat),
       ),
     );
   }

@@ -1,4 +1,6 @@
 import 'package:com.jyhong.stock_game/main.dart';
+import 'package:com.jyhong.stock_game/pages/chat/chat/chat_page.dart';
+import 'package:com.jyhong.stock_game/pages/chat/chat_room/chat_room_controller.dart';
 import 'package:get/get.dart';
 import '../../services/friend_service.dart'; // 경로는 실제 위치에 맞게 수정
 
@@ -118,6 +120,51 @@ class FriendsController extends GetxController {
       await fetchFriends(); // 최신화
     } catch (e) {
       Get.snackbar('Error', '친구 삭제 실패: $e');
+    }
+  }
+
+  void handleChatWithFriend(Map<String, dynamic> friend) async {
+    final chatRoomController = Get.find<ChatRoomController>();
+    final myUuid = chatRoomController.myUuid;
+    final selectedUuid = friend['uuid'];
+
+    // 1. 기존 채팅방 찾기
+    final existingRoom = chatRoomController.chatRooms.firstWhereOrNull(
+      (room) => (room['members'] as List).any(
+        (e) => e['user']['uuid'] == selectedUuid,
+      ),
+    );
+
+    if (existingRoom != null) {
+      final other = (existingRoom['members'] as List)
+          .map((e) => e['user'])
+          .firstWhere((user) => user['uuid'] != myUuid);
+
+      Get.to(
+        () => ChatPage(
+          uuid: other['uuid'],
+          nickname: other['nickname'],
+          myUuid: myUuid,
+          roomId: existingRoom['id'],
+        ),
+      );
+    } else {
+      // 2. 새 채팅방 생성
+      final newRoom = await chatRoomController.createChatRoom(selectedUuid);
+      if (newRoom != null) {
+        final other = (newRoom['members'] as List)
+            .map((e) => e['user'])
+            .firstWhere((user) => user['uuid'] != myUuid);
+
+        Get.to(
+          () => ChatPage(
+            uuid: other['uuid'],
+            nickname: other['nickname'],
+            myUuid: myUuid,
+            roomId: newRoom['id'],
+          ),
+        );
+      }
     }
   }
 }

@@ -105,8 +105,7 @@ class _FriendsPageState extends State<FriendsPage> {
                               color: Colors.blue,
                             ),
                             onPressed:
-                                () =>
-                                    print('💬 ${friend['nickname']}에게 메시지 보내기'),
+                                () => controller.handleChatWithFriend(friend),
                           ),
                           IconButton(
                             icon: const Icon(Icons.delete, color: Colors.red),

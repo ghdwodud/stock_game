@@ -1,3 +1,4 @@
+import 'package:com.jyhong.stock_game/main.dart';
 import 'package:com.jyhong.stock_game/services/chat_message_service.dart';
 import 'package:com.jyhong.stock_game/services/chat_socket_service.dart';
 import 'package:flutter/material.dart';
@@ -44,8 +45,8 @@ class ChatController extends GetxController {
       debugPrint('❌ 메시지 불러오기 실패: $e');
     }
 
-    // ✅ 소켓으로 실시간 메시지 수신
     _chatSocketService.onReceiveMessage((data) {
+      print('✅ 소켓 메시지 도착: $data');
       final isMine = data['senderId'] == myUuid;
       messages.add({
         'text': data['text'],
@@ -53,15 +54,6 @@ class ChatController extends GetxController {
         'timestamp': DateTime.now(),
       });
     });
-
-    // 안내 메시지 (최초 대화 시)
-    if (messages.isEmpty) {
-      messages.add({
-        'text': '$chatPartnerNickname 님과의 대화를 시작합니다.',
-        'isMine': false,
-        'timestamp': DateTime.now(),
-      });
-    }
   }
 
   void sendMessage() {
