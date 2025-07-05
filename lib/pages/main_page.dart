@@ -6,12 +6,22 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class StockGameMainPage extends StatefulWidget {
+  final int initialIndex;
+
+  const StockGameMainPage({super.key, this.initialIndex = 0});
+
   @override
   _StockGameMainPageState createState() => _StockGameMainPageState();
 }
 
 class _StockGameMainPageState extends State<StockGameMainPage> {
-  int _selectedIndex = 0;
+  late int _selectedIndex;
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedIndex = widget.initialIndex;
+  }
 
   void _onItemTapped(int index) {
     setState(() {
@@ -30,7 +40,7 @@ class _StockGameMainPageState extends State<StockGameMainPage> {
       case 3:
         return ChatRoomPage();
       default:
-        return Center(child: Text('페이지를 찾을 수 없습니다.'));
+        return const Center(child: Text('페이지를 찾을 수 없습니다.'));
     }
   }
 

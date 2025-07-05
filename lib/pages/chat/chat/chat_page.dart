@@ -1,8 +1,7 @@
+import 'package:com.jyhong.stock_game/pages/main_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-
-import '../chat_room/chat_room_page.dart'; // ChatRoomPage import
 import 'chat_controller.dart';
 
 class ChatPage extends StatelessWidget {
@@ -31,11 +30,19 @@ class ChatPage extends StatelessWidget {
 
     return WillPopScope(
       onWillPop: () async {
-        Get.offAll(() => const ChatRoomPage()); // ✅ 무조건 채팅방 목록으로 이동
+        Get.offAll(() => const StockGameMainPage(initialIndex: 3));
         return false;
       },
       child: Scaffold(
-        appBar: AppBar(title: Text(nickname)),
+        appBar: AppBar(
+          title: Text(nickname),
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () {
+              Get.offAll(() => const StockGameMainPage(initialIndex: 3));
+            },
+          ),
+        ),
         body: Column(
           children: [
             Expanded(

@@ -13,7 +13,7 @@ class ChatController extends GetxController {
   late String myUuid;
   late String roomId;
 
-  final ChatSocketService _chatSocketService = ChatSocketService();
+  final ChatSocketService _chatSocketService = Get.find();
   final ChatMessageService _chatMessageService = ChatMessageService();
 
   void initChat(
@@ -27,9 +27,9 @@ class ChatController extends GetxController {
     myUuid = myId;
     this.roomId = roomId;
 
-    _chatSocketService.connect(myUuid);
+    _chatSocketService.joinRoom(roomId);
 
-    // ✅ 기존 메시지 불러오기 (REST API)
+    // ✅ 기존 메시지 불러오기
     try {
       final history = await _chatMessageService.fetchMessages(roomId);
       messages.assignAll(
@@ -45,14 +45,16 @@ class ChatController extends GetxController {
       debugPrint('❌ 메시지 불러오기 실패: $e');
     }
 
+    // ✅ 해당 방에 대한 수신 핸들러만 등록
     _chatSocketService.onReceiveMessage((data) {
-      print('✅ 소켓 메시지 도착: $data');
-      final isMine = data['senderId'] == myUuid;
-      messages.add({
-        'text': data['text'],
-        'isMine': isMine,
-        'timestamp': DateTime.now(),
-      });
+      if (data['roomId'] == roomId) {
+        final isMine = data['senderId'] == myUuid;
+        messages.add({
+          'text': data['text'],
+          'isMine': isMine,
+          'timestamp': DateTime.now(),
+        });
+      }
     });
   }
 
@@ -69,7 +71,6 @@ class ChatController extends GetxController {
   @override
   void onClose() {
     inputController.dispose();
-    _chatSocketService.disconnect();
     super.onClose();
   }
 }

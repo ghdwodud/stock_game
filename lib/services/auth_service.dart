@@ -1,4 +1,6 @@
 import 'dart:math' as console;
+import 'package:com.jyhong.stock_game/main.dart';
+import 'package:com.jyhong.stock_game/services/chat_socket_service.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -33,6 +35,12 @@ class AuthService extends GetxService {
     _jwt.value = _prefs?.getString(_jwtKey) ?? '';
     _refreshToken.value = _prefs?.getString(_refreshTokenKey) ?? '';
     _avatarUrl.value = _prefs?.getString(_avatarUrlKey) ?? '';
+    if (isLoggedIn) {
+      // ✅ 자동 로그인 상태라면 소켓도 자동 연결
+      final socketService = Get.find<ChatSocketService>();
+      socketService.connect(_userUuid.value);
+      logger.d('[AuthService] 자동 로그인: 소켓 연결됨 (uuid: ${_userUuid.value})');
+    }
     return this;
   }
 
@@ -56,6 +64,10 @@ class AuthService extends GetxService {
     _nickname.value = nickname;
     _jwt.value = token;
     _refreshToken.value = refreshToken;
+
+    final socketService = Get.find<ChatSocketService>();
+    socketService.connect(userUuid);
+    logger.d('[AuthService] setAuth: 소켓 연결됨 (uuid: $userUuid)');
   }
 
   Future<void> clearAuth() async {
@@ -70,6 +82,10 @@ class AuthService extends GetxService {
     _jwt.value = '';
     _refreshToken.value = '';
     _avatarUrl.value = '';
+
+    final socketService = Get.find<ChatSocketService>();
+    socketService.disconnect();
+    logger.d('[AuthService] clearAuth: 소켓 연결 해제됨');
   }
 
   Future<void> logout() async {

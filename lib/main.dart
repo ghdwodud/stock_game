@@ -28,11 +28,11 @@ void main() async {
   Get.put(ApiService());
   Get.put(TranslationService());
 
-  final authService = await Get.putAsync(() => AuthService().init());
-  await Get.putAsync(() async => FriendService());
-
-  Get.put(ChatRoomService());
   Get.put(ChatSocketService());
+
+  final authService = await Get.putAsync(() => AuthService().init());
+  Get.put(ChatRoomService());
+  await Get.putAsync(() async => FriendService());
 
   runApp(MyApp(authService));
 }
