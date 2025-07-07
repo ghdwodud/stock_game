@@ -2,6 +2,9 @@ import 'package:com.jyhong.stock_game/pages/chat/chat_room/chat_room_page.dart';
 import 'package:com.jyhong.stock_game/pages/friend/friend_page.dart';
 import 'package:com.jyhong.stock_game/pages/home/home_page.dart';
 import 'package:com.jyhong.stock_game/pages/market/all_stocks/all_stocks_page.dart';
+import 'package:com.jyhong.stock_game/services/auth_service.dart';
+import 'package:com.jyhong.stock_game/services/chat_room_service.dart';
+import 'package:com.jyhong.stock_game/services/chat_socket_service.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -21,6 +24,28 @@ class _StockGameMainPageState extends State<StockGameMainPage> {
   void initState() {
     super.initState();
     _selectedIndex = widget.initialIndex;
+
+    _initializeChatRooms();
+  }
+
+  void _initializeChatRooms() async {
+    try {
+      final authService = Get.find<AuthService>();
+      final myUuid = authService.userUuid;
+
+      if (myUuid.isEmpty) {
+        debugPrint('❌ UUID 없음 - 채팅방 초기화 생략');
+        return;
+      }
+
+      final rooms = await Get.find<ChatRoomService>().fetchMyChatRooms(myUuid);
+      final roomIds = rooms.map((r) => r['id'] as String).toList();
+
+      Get.find<ChatSocketService>().joinMultipleRooms(roomIds);
+      debugPrint('✅ ${roomIds.length}개 채팅방 join 완료');
+    } catch (e) {
+      debugPrint('❌ 채팅방 초기화 실패: $e');
+    }
   }
 
   void _onItemTapped(int index) {

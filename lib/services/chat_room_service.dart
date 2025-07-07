@@ -13,7 +13,7 @@ class ChatRoomService {
     return Map<String, dynamic>.from(res);
   }
 
-  Future<List<Map<String, dynamic>>> fetchMyChatRooms() async {
+  Future<List<Map<String, dynamic>>> fetchMyChatRooms(String myUuid) async {
     final uuid = _auth.userUuid;
     final res = await _api.get('/chatroom?userUuid=$uuid');
     return List<Map<String, dynamic>>.from(res);

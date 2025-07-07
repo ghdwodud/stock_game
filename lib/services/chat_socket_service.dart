@@ -78,6 +78,21 @@ class ChatSocketService {
   void joinRoom(String roomId) {
     if (socket == null) return;
     logger.i('📥 [Socket] 방 참가 요청: $roomId');
-    socket!.emit('join', {'roomId': roomId});
+    socket.emit('join', {'roomId': roomId});
+  }
+
+  void joinMultipleRooms(List<String> roomIds) {
+    for (final id in roomIds) {
+      logger.i('📥 [Socket] 방 참가 요청: $id');
+      socket.emit('join', {'roomId': id});
+    }
+  }
+
+  void listenNewRooms() {
+    socket.on('new_room', (data) {
+      final roomId = data['roomId'];
+      joinRoom(roomId);
+      logger.i('🆕 새로운 채팅방 참여됨: $roomId');
+    });
   }
 }

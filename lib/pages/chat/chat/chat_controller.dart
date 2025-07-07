@@ -27,8 +27,6 @@ class ChatController extends GetxController {
     myUuid = myId;
     this.roomId = roomId;
 
-    _chatSocketService.joinRoom(roomId);
-
     // ✅ 기존 메시지 불러오기
     try {
       final history = await _chatMessageService.fetchMessages(roomId);
