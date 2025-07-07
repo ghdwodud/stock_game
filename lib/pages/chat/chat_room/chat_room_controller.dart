@@ -1,5 +1,6 @@
 import 'package:com.jyhong.stock_game/main.dart';
 import 'package:com.jyhong.stock_game/services/chat_room_service.dart';
+import 'package:com.jyhong.stock_game/services/chat_socket_service.dart';
 import 'package:get/get.dart';
 import 'package:com.jyhong.stock_game/services/auth_service.dart';
 
@@ -39,12 +40,28 @@ class ChatRoomController extends GetxController {
 
   Future<void> deleteChatRoom(String roomId) async {
     try {
-      await _chatRoomService.deleteRoom(roomId); // 서버 삭제 요청
-      chatRooms.removeWhere((room) => room['id'] == roomId); // 로컬 목록에서 제거
+      await _chatRoomService.deleteRoom(roomId); // 서버에 삭제 요청
+
+      final deletedRoom = chatRooms.firstWhere((room) => room['id'] == roomId);
+      final members = List<Map<String, dynamic>>.from(deletedRoom['members']);
+      final memberUuids =
+          members.map((m) => m['user']['uuid'] as String).toList();
+      final friendUuid = memberUuids.firstWhere((uuid) => uuid != myUuid);
+
+      // 🔌 상대방에게 삭제 알림 전송
+      Get.find<ChatSocketService>().emitDeletedRoom(friendUuid, roomId);
+
+      // 🧹 로컬 목록에서 제거
+      chatRooms.removeWhere((room) => room['id'] == roomId);
+
       Get.snackbar('삭제 완료', '채팅방이 삭제되었습니다.');
     } catch (e) {
       logger.e('❌ 채팅방 삭제 실패', error: e);
       Get.snackbar('오류', '채팅방 삭제 실패: $e');
     }
+  }
+
+  Future<void> updateRooms(List<Map<String, dynamic>> rooms) async {
+    chatRooms.value = rooms;
   }
 }

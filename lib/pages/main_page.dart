@@ -24,8 +24,9 @@ class _StockGameMainPageState extends State<StockGameMainPage> {
   void initState() {
     super.initState();
     _selectedIndex = widget.initialIndex;
-
     _initializeChatRooms();
+    Get.find<ChatSocketService>().listenNewRooms();
+    Get.find<ChatSocketService>().listenDeletedRooms();
   }
 
   void _initializeChatRooms() async {
